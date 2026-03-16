@@ -14,11 +14,11 @@ const options = {
     },
     servers: [
       {
-        url: "https://dev-squad26-week3-day2-backend.vercel.app",
+        url: "https://dev-squad26-week4day1-backend.vercel.app",
         description: "Production server",
       },
       {
-        url: "http://localhost:3000",
+        url: "http://localhost:3001",
         description: "Development server",
       },
     ],
@@ -112,7 +112,7 @@ const options = {
       },
     },
   },
-  apis: [path.join(__dirname, "../routes/*.js")],
+  apis: [path.join(__dirname, "../routes/*.ts")],
 };
 
 const swaggerSpec = swaggerJsdoc(options);
