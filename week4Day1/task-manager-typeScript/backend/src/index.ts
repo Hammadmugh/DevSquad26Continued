@@ -12,29 +12,10 @@ const app = express();
 // Initialize file storage
 initializeStorage();
 
-// CORS Configuration
-const corsOptions = {
-  origin: "*",
-  credentials: false,
-  optionsSuccessStatus: 200,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization"],
-};
 
 // Middleware
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json());
-
-// Options handler for preflight requests
-app.options("*", cors(corsOptions));
-
-// Additional CORS Headers
-app.use((req: Request, res: Response, next: NextFunction) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  next();
-});
 
 // Swagger Documentation
 app.use(
@@ -71,5 +52,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running at port ${PORT}`);
 });
-
-export default app
