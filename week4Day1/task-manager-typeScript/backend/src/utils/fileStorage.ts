@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import { v4 as uuidv4 } from "uuid";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const USERS_FILE = path.join(DATA_DIR, "users.json");
@@ -43,7 +44,7 @@ export const findUserById = (id: string): any | null => {
 export const createUser = (email: string, password: string): any => {
   const users = readUsers();
   const newUser = {
-    id: Date.now().toString(),
+    id: uuidv4(),
     email,
     password,
     createdAt: new Date(),
@@ -83,7 +84,7 @@ export const findTasksByUserAndTitle = (userId: string, title: string): any[] =>
 export const createTask = (title: string, completed: boolean, userId: string): any => {
   const tasks = readTasks();
   const newTask = {
-    id: Date.now().toString(),
+    id: uuidv4(),
     title,
     completed,
     user: userId,
