@@ -15,7 +15,7 @@ initializeStorage();
 // CORS Configuration
 const corsOptions = {
   origin: "*",
-  credentials: true,
+  credentials: false,
   optionsSuccessStatus: 200,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization"],
