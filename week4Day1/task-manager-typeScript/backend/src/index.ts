@@ -17,28 +17,6 @@ initializeStorage();
 app.use(cors());
 app.use(express.json());
 
-// Swagger Documentation
-app.use(
-  "/api-docs",
-  swaggerUi.serve,
-  swaggerUi.setup(swaggerSpec, {
-    customSiteTitle: "Task Manager API Docs",
-    swaggerOptions: { persistAuthorization: true },
-    customCssUrl:
-      "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.3.0/swagger-ui.min.css",
-    customJs: [
-      "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.3.0/swagger-ui-bundle.js",
-      "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.3.0/swagger-ui-standalone-preset.js",
-    ],
-  }),
-);
-
-// Serve Swagger JSON
-app.get("/swagger-json", (req: Request, res: Response) => {
-  res.setHeader("Content-Type", "application/json");
-  res.send(swaggerSpec);
-});
-
 // Health check endpoint
 app.get("/api/health", (req: Request, res: Response) => {
   res.status(200).json({ status: "ok", message: "API is running" });
