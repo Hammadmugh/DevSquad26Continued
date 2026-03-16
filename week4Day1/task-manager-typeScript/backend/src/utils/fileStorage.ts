@@ -1,11 +1,15 @@
 import fs from "fs";
 import path from "path";
-import { v4 as uuidv4 } from "uuid";
 
 // Use /tmp for Vercel, data/ for local
 const DATA_DIR = process.env.VERCEL ? "/tmp/data" : path.join(process.cwd(), "data");
 const USERS_FILE = path.join(DATA_DIR, "users.json");
 const TASKS_FILE = path.join(DATA_DIR, "tasks.json");
+
+// Generate simple unique ID
+const generateId = (): string => {
+  return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+};
 
 // Initialize data directory and files
 export const initializeStorage = (): void => {
@@ -45,7 +49,7 @@ export const findUserById = (id: string): any | null => {
 export const createUser = (email: string, password: string): any => {
   const users = readUsers();
   const newUser = {
-    id: uuidv4(),
+    id: generateId(),
     email,
     password,
     createdAt: new Date(),
@@ -85,7 +89,7 @@ export const findTasksByUserAndTitle = (userId: string, title: string): any[] =>
 export const createTask = (title: string, completed: boolean, userId: string): any => {
   const tasks = readTasks();
   const newTask = {
-    id: uuidv4(),
+    id: generateId(),
     title,
     completed,
     user: userId,
