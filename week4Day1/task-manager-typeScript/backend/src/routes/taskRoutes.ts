@@ -2,7 +2,7 @@ import express from "express";
 import verifyToken from "../middlewares/authMiddleware";
 import {
   getTask,
-  createTask,
+  createTaskController,
   getTasks,
   updateTask,
   deleteTask,
@@ -130,7 +130,7 @@ const router = express.Router();
  *       401:
  *         description: Unauthorized - Missing or invalid token
  */
-router.route("/").get(verifyToken, getTasks).post(verifyToken, createTask);
+router.route("/").get(verifyToken, getTasks).post(verifyToken, createTaskController);
 
 /**
  * @swagger

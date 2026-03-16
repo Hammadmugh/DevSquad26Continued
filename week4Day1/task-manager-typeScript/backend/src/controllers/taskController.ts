@@ -1,27 +1,33 @@
-import TaskModel from "../models/taskModel";
+import {
+  findTaskById,
+  findTasksByUser,
+  findTasksByUserAndTitle,
+  createTask,
+  updateTaskById,
+  deleteTaskById,
+  getTaskStats,
+} from "../utils/fileStorage";
 import { constants } from "../middlewares/constants";
 import { Request, Response, NextFunction } from "express";
 
-const createTask = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+const createTaskController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { title, completed } = req.body;
     if (!title || typeof completed !== "boolean") {
       res.status(constants.VALIDATION_ERROR);
       throw new Error("Task name and status is required");
     }
-    const model = new TaskModel({ title, completed, user: (req as any).user.id });
-    await model.save();
-    res.status(201).json({ success: true, data: model, message: "Task created successfully" });
+    const task = createTask(title, completed, (req as any).user.id);
+    res.status(201).json({ success: true, data: task, message: "Task created successfully" });
   } catch (err) {
     next(err);
   }
 };
+
 const getTask = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const task = await TaskModel.findOne({
-      _id: req.params.id,
-      user: (req as any).user.id,
-    });
+    const taskId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+    const task = findTaskById(taskId, (req as any).user.id);
 
     if (!task) {
       res.status(constants.NOT_FOUND);
@@ -33,6 +39,7 @@ const getTask = async (req: Request, res: Response, next: NextFunction): Promise
     next(err);
   }
 };
+
 const updateTask = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { title, completed } = req.body;
@@ -47,11 +54,8 @@ const updateTask = async (req: Request, res: Response, next: NextFunction): Prom
     if (title) updateData.title = title;
     if (typeof completed === "boolean") updateData.completed = completed;
 
-    const task = await TaskModel.findOneAndUpdate(
-      { _id: req.params.id, user: (req as any).user.id },
-      updateData,
-      { new: true }
-    );
+    const taskId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+    const task = updateTaskById(taskId, (req as any).user.id, updateData);
 
     if (!task) {
       res.status(constants.NOT_FOUND);
@@ -63,12 +67,11 @@ const updateTask = async (req: Request, res: Response, next: NextFunction): Prom
     next(err);
   }
 };
+
 const deleteTask = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const task = await TaskModel.findOneAndDelete({
-      _id: req.params.id,
-      user: (req as any).user.id,
-    });
+    const taskId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+    const task = deleteTaskById(taskId, (req as any).user.id);
 
     if (!task) {
       res.status(constants.NOT_FOUND);
@@ -80,17 +83,20 @@ const deleteTask = async (req: Request, res: Response, next: NextFunction): Prom
     next(err);
   }
 };
+
 const getTasks = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { title } = req.query;
-    let query: any = { user: (req as any).user.id };
+    let tasks: any[];
     
     if (title) {
-      query.title = { $regex: title, $options: "i" };
+      const titleStr = typeof title === 'string' ? title : String(title);
+      tasks = findTasksByUserAndTitle((req as any).user.id, titleStr);
+    } else {
+      tasks = findTasksByUser((req as any).user.id);
     }
     
-    const tasks = await TaskModel.find(query);
-     if (tasks.length === 0) {
+    if (tasks.length === 0) {
       res.status(constants.NOT_FOUND);
       throw new Error("Tasks not found");
     }
@@ -99,28 +105,19 @@ const getTasks = async (req: Request, res: Response, next: NextFunction): Promis
     next(err);
   }
 };
+
 const getStats = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const totalTasks = await TaskModel.countDocuments({ user: (req as any).user.id });
-    const completedTasks = await TaskModel.countDocuments({
-      user: (req as any).user.id,
-      completed: true,
-    });
-    const pendingTasks = totalTasks - completedTasks;
-
+    const stats = getTaskStats((req as any).user.id);
     res.status(200).json({
       success: true,
-      data: {
-        totalTasks,
-        completedTasks,
-        pendingTasks,
-      },
+      data: stats,
       message: "Stats retrieved successfully",
     });
   } catch (err) {
     next(err);
   }
 };
-module.exports = { getTask, createTask, getTasks, updateTask, deleteTask, getStats };
+module.exports = { getTask, createTaskController, getTasks, updateTask, deleteTask, getStats };
 
-export { getTask, createTask, getTasks, updateTask, deleteTask, getStats };
+export { getTask, createTaskController, getTasks, updateTask, deleteTask, getStats };

@@ -6,10 +6,11 @@ import errorHandler from "../src/middlewares/errorHandler";
 import "dotenv/config";
 import authRoutes from "../src/routes/authRoutes";
 import taskRoutes from "../src/routes/taskRoutes";
-import dbConnect from "../src/config/dbConnect";
+import { initializeStorage } from "../src/utils/fileStorage";
 const app = express();
 
-dbConnect();
+// Initialize file storage
+initializeStorage();
 
 // Middleware
 app.use(cors());

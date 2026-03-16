@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import validator from "validator";
-import User from "../models/userModel";
+import { findUserByEmail, createUser } from "../utils/fileStorage";
 import { constants } from "../middlewares/constants";
 import { Request, Response, NextFunction } from "express";
 
@@ -19,9 +19,14 @@ const register = async (req: Request, res: Response, next: NextFunction): Promis
       throw new Error("Invalid email format");
     }
     
+    const existingUser = findUserByEmail(email);
+    if (existingUser) {
+      res.status(constants.VALIDATION_ERROR);
+      throw new Error("Email already exists");
+    }
+    
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ email, password: hashedPassword });
-    await newUser.save();
+    const newUser = createUser(email, hashedPassword);
     res.status(201).json({ 
       success: true, 
       data: { email: newUser.email },
@@ -46,7 +51,7 @@ const login = async (req: Request, res: Response, next: NextFunction): Promise<v
       throw new Error("Invalid email format");
     }
     
-    const user = await User.findOne({ email });
+    const user = findUserByEmail(email);
     if (!user) {
       res.status(constants.NOT_FOUND);
       throw new Error(`${email} not found`);
@@ -58,7 +63,7 @@ const login = async (req: Request, res: Response, next: NextFunction): Promise<v
       throw new Error("Invalid Credentials");
     }
     
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET!, {
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET!, {
       expiresIn: "1h",
     });
     res.status(200).json({ 
