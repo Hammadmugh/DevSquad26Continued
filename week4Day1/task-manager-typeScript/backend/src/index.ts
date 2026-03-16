@@ -39,6 +39,11 @@ app.get("/swagger-json", (req: Request, res: Response) => {
   res.send(swaggerSpec);
 });
 
+// Health check endpoint
+app.get("/api/health", (req: Request, res: Response) => {
+  res.status(200).json({ status: "ok", message: "API is running" });
+});
+
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
