@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
+import type { AxiosInstance } from 'axios';
 
 // Create axios instance with base URL
 const api: AxiosInstance = axios.create({
@@ -9,52 +9,10 @@ const api: AxiosInstance = axios.create({
   },
 });
 
-// Add token to every request if it exists
-api.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error: any) => {
-    return Promise.reject(error);
-  }
-);
-
-// ==================== AUTH API CALLS ====================
-
-/**
- * Register a new user
- * @param {string} email - User email
- * @param {string} password - User password
- * @returns {Promise} Response with success status and message
- */
-export const registerUser = (email: string, password: string) => {
-  return api.post('auth/register', {
-    email,
-    password,
-  });
-};
-
-/**
- * Login user
- * @param {string} email - User email
- * @param {string} password - User password
- * @returns {Promise} Response with JWT token
- */
-export const loginUser = (email: string, password: string) => {
-  return api.post('auth/login', {
-    email,
-    password,
-  });
-};
-
 // ==================== TASK API CALLS ====================
 
 /**
- * Get all tasks for authenticated user (with optional search)
+ * Get all tasks (with optional search)
  * @param {string} title - Optional title to search by
  * @returns {Promise} Array of tasks
  */

@@ -1,98 +1,46 @@
-import fs from "fs";
-import path from "path";
-
-// Use /tmp for Vercel, data/ for local
-const DATA_DIR = process.env.VERCEL ? "/tmp/data" : path.join(__dirname, "../../data");
-const USERS_FILE = path.join(DATA_DIR, "users.json");
-const TASKS_FILE = path.join(DATA_DIR, "tasks.json");
+// In-memory storage
+let tasksStore: any[] = [];
 
 // Generate simple unique ID
 const generateId = (): string => {
   return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 };
 
-// Initialize data directory and files
+// Initialize storage (no-op for in-memory)
 export const initializeStorage = (): void => {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-  }
-
-  if (!fs.existsSync(USERS_FILE)) {
-    fs.writeFileSync(USERS_FILE, JSON.stringify([], null, 2));
-  }
-
-  if (!fs.existsSync(TASKS_FILE)) {
-    fs.writeFileSync(TASKS_FILE, JSON.stringify([], null, 2));
-  }
-};
-
-// User operations
-export const readUsers = (): any[] => {
-  const data = fs.readFileSync(USERS_FILE, "utf-8");
-  return JSON.parse(data);
-};
-
-export const writeUsers = (users: any[]): void => {
-  fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
-};
-
-export const findUserByEmail = (email: string): any | null => {
-  const users = readUsers();
-  return users.find((user) => user.email === email) || null;
-};
-
-export const findUserById = (id: string): any | null => {
-  const users = readUsers();
-  return users.find((user) => user.id === id) || null;
-};
-
-export const createUser = (email: string, password: string): any => {
-  const users = readUsers();
-  const newUser = {
-    id: generateId(),
-    email,
-    password,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
-  users.push(newUser);
-  writeUsers(users);
-  return newUser;
+  console.log("In-memory storage initialized");
 };
 
 // Task operations
 export const readTasks = (): any[] => {
-  const data = fs.readFileSync(TASKS_FILE, "utf-8");
-  return JSON.parse(data);
+  return tasksStore;
 };
 
 export const writeTasks = (tasks: any[]): void => {
-  fs.writeFileSync(TASKS_FILE, JSON.stringify(tasks, null, 2));
+  tasksStore = tasks;
 };
 
-export const findTaskById = (id: string, userId: string): any | null => {
+export const findTaskById = (id: string): any | null => {
   const tasks = readTasks();
-  return tasks.find((task) => task.id === id && task.user === userId) || null;
+  return tasks.find((task) => task._id === id) || null;
 };
 
-export const findTasksByUser = (userId: string): any[] => {
-  const tasks = readTasks();
-  return tasks.filter((task) => task.user === userId);
+export const getAllTasks = (): any[] => {
+  return readTasks();
 };
 
-export const findTasksByUserAndTitle = (userId: string, title: string): any[] => {
+export const findTasksByTitle = (title: string): any[] => {
   const tasks = readTasks();
   const regex = new RegExp(title, "i");
-  return tasks.filter((task) => task.user === userId && regex.test(task.title));
+  return tasks.filter((task) => regex.test(task.title));
 };
 
-export const createTask = (title: string, completed: boolean, userId: string): any => {
+export const createTask = (title: string, completed: boolean): any => {
   const tasks = readTasks();
   const newTask = {
-    id: generateId(),
+    _id: generateId(),
     title,
     completed,
-    user: userId,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -101,9 +49,9 @@ export const createTask = (title: string, completed: boolean, userId: string): a
   return newTask;
 };
 
-export const updateTaskById = (id: string, userId: string, updateData: any): any | null => {
+export const updateTaskById = (id: string, updateData: any): any | null => {
   const tasks = readTasks();
-  const taskIndex = tasks.findIndex((task) => task.id === id && task.user === userId);
+  const taskIndex = tasks.findIndex((task) => task._id === id);
 
   if (taskIndex === -1) return null;
 
@@ -116,9 +64,9 @@ export const updateTaskById = (id: string, userId: string, updateData: any): any
   return tasks[taskIndex];
 };
 
-export const deleteTaskById = (id: string, userId: string): any | null => {
+export const deleteTaskById = (id: string): any | null => {
   const tasks = readTasks();
-  const taskIndex = tasks.findIndex((task) => task.id === id && task.user === userId);
+  const taskIndex = tasks.findIndex((task) => task._id === id);
 
   if (taskIndex === -1) return null;
 
@@ -127,11 +75,10 @@ export const deleteTaskById = (id: string, userId: string): any | null => {
   return deletedTask[0];
 };
 
-export const getTaskStats = (userId: string): any => {
+export const getTaskStats = (): any => {
   const tasks = readTasks();
-  const userTasks = tasks.filter((task) => task.user === userId);
-  const completedTasks = userTasks.filter((task) => task.completed).length;
-  const totalTasks = userTasks.length;
+  const completedTasks = tasks.filter((task) => task.completed).length;
+  const totalTasks = tasks.length;
   const pendingTasks = totalTasks - completedTasks;
 
   return {

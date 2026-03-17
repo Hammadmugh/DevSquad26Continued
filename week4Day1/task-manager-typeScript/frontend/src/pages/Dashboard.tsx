@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import TaskForm from '../components/TaskForm';
 import TaskList from '../components/TaskList';
@@ -18,14 +17,11 @@ interface Stats {
 }
 
 const Dashboard = () => {
-  const navigate = useNavigate();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [stats, setStats] = useState<Stats>({ totalTasks: 0, completedTasks: 0, pendingTasks: 0 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchTitle, setSearchTitle] = useState('');
-
-  const userEmail = localStorage.getItem('userEmail');
 
   useEffect(() => {
     fetchTasks();
@@ -43,9 +39,6 @@ const Dashboard = () => {
     } catch (err) {
       const axiosError = err as AxiosError<{ message: string }>;
       setError(axiosError.response?.data?.message || 'Failed to fetch tasks');
-      if (axiosError.response?.status === 401) {
-        navigate('/login');
-      }
     } finally {
       setLoading(false);
     }
@@ -84,29 +77,12 @@ const Dashboard = () => {
     fetchTasks(title);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userEmail');
-    navigate('/auth');
-  };
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Navigation Bar */}
       <nav className="bg-white shadow-md sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <h1 className="text-2xl font-bold text-blue-600">TaskMaster</h1>
-          <div className="flex items-center gap-4">
-            <span className="md:text-gray-700 text-sm text-transparent">
-              Welcome, <span className="font-semibold">{userEmail}</span>
-            </span>
-            <button
-              onClick={handleLogout}
-              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition duration-200"
-            >
-              Logout
-            </button>
-          </div>
         </div>
       </nav>
 

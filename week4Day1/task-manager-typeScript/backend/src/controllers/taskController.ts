@@ -1,7 +1,7 @@
 import {
   findTaskById,
-  findTasksByUser,
-  findTasksByUserAndTitle,
+  getAllTasks,
+  findTasksByTitle,
   createTask,
   updateTaskById,
   deleteTaskById,
@@ -17,7 +17,7 @@ const createTaskController = async (req: Request, res: Response, next: NextFunct
       res.status(constants.VALIDATION_ERROR);
       throw new Error("Task name and status is required");
     }
-    const task = createTask(title, completed, (req as any).user.id);
+    const task = createTask(title, completed);
     res.status(201).json({ success: true, data: task, message: "Task created successfully" });
   } catch (err) {
     next(err);
@@ -27,7 +27,7 @@ const createTaskController = async (req: Request, res: Response, next: NextFunct
 const getTask = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const taskId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
-    const task = findTaskById(taskId, (req as any).user.id);
+    const task = findTaskById(taskId);
 
     if (!task) {
       res.status(constants.NOT_FOUND);
@@ -55,7 +55,7 @@ const updateTask = async (req: Request, res: Response, next: NextFunction): Prom
     if (typeof completed === "boolean") updateData.completed = completed;
 
     const taskId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
-    const task = updateTaskById(taskId, (req as any).user.id, updateData);
+    const task = updateTaskById(taskId, updateData);
 
     if (!task) {
       res.status(constants.NOT_FOUND);
@@ -71,7 +71,7 @@ const updateTask = async (req: Request, res: Response, next: NextFunction): Prom
 const deleteTask = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const taskId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
-    const task = deleteTaskById(taskId, (req as any).user.id);
+    const task = deleteTaskById(taskId);
 
     if (!task) {
       res.status(constants.NOT_FOUND);
@@ -91,15 +91,11 @@ const getTasks = async (req: Request, res: Response, next: NextFunction): Promis
     
     if (title) {
       const titleStr = typeof title === 'string' ? title : String(title);
-      tasks = findTasksByUserAndTitle((req as any).user.id, titleStr);
+      tasks = findTasksByTitle(titleStr);
     } else {
-      tasks = findTasksByUser((req as any).user.id);
+      tasks = getAllTasks();
     }
     
-    if (tasks.length === 0) {
-      res.status(constants.NOT_FOUND);
-      throw new Error("Tasks not found");
-    }
     res.status(200).json({ success: true, data: tasks, message: "Tasks retrieved successfully" });
   } catch (err) {
     next(err);
@@ -108,7 +104,7 @@ const getTasks = async (req: Request, res: Response, next: NextFunction): Promis
 
 const getStats = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const stats = getTaskStats((req as any).user.id);
+    const stats = getTaskStats();
     res.status(200).json({
       success: true,
       data: stats,

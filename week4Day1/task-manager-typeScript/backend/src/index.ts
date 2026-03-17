@@ -4,7 +4,6 @@ import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./config/swagger";
 import errorHandler from "../src/middlewares/errorHandler";
 import "dotenv/config";
-import authRoutes from "../src/routes/authRoutes";
 import taskRoutes from "../src/routes/taskRoutes";
 import { initializeStorage } from "../src/utils/fileStorage";
 const app = express();
@@ -23,7 +22,6 @@ app.get("/api/health", (req: Request, res: Response) => {
 });
 
 // Routes
-app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
 
 // Error Handler
