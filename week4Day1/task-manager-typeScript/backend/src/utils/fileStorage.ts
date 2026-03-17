@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 
 // Use /tmp for Vercel, data/ for local
-const DATA_DIR = process.env.VERCEL ? "/tmp/data" : path.join(process.cwd(), "data");
+const DATA_DIR = process.env.VERCEL ? "/tmp/data" : path.join(__dirname, "../../data");
 const USERS_FILE = path.join(DATA_DIR, "users.json");
 const TASKS_FILE = path.join(DATA_DIR, "tasks.json");
 
