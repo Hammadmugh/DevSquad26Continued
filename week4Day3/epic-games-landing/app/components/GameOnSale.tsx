@@ -45,11 +45,13 @@ export default function GamesOnSale({ title }: GamesOnSaleProps) {
         }}
         onSwiper={(swiper) => {
           setTimeout(() => {
-            swiper.params.navigation.prevEl = prevRef.current;
-            swiper.params.navigation.nextEl = nextRef.current;
-            swiper.navigation.destroy();
-            swiper.navigation.init();
-            swiper.navigation.update();
+            if (swiper.params.navigation && typeof swiper.params.navigation === 'object') {
+              (swiper.params.navigation as any).prevEl = prevRef.current;
+              (swiper.params.navigation as any).nextEl = nextRef.current;
+              swiper.navigation.destroy();
+              swiper.navigation.init();
+              swiper.navigation.update();
+            }
           });
         }}
       >
