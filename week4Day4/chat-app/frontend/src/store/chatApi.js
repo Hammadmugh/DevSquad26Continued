@@ -1,8 +1,12 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
+const API_BASE_URL = import.meta.env.DEV
+  ? "http://localhost:5000/api"
+  : "https://devsquad26continued.onrender.com/api";
+
 export const chatApi = createApi({
   reducerPath: "chatApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "https://chat-app-backend-beige-alpha.vercel.app/api" }),
+  baseQuery: fetchBaseQuery({ baseUrl: API_BASE_URL }),
   tagTypes: ["Messages"],
   endpoints: (builder) => ({
     // GET /api/rooms
