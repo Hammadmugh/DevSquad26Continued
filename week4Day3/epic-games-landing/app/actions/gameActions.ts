@@ -1,19 +1,10 @@
 'use server';
 
 // Helper function to get the base URL for API calls
-function getBaseUrl() {
-  // For Vercel production/preview deployments
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`;
-  }
-  
-  // For local development
-  return 'http://localhost:3000';
-}
+const baseUrl = process.env.NEXT_PUBLIC_API_URL
 
 export async function fetchHeroSectionData() {
   try {
-    const baseUrl = getBaseUrl();
     console.log('Fetching hero from:', `${baseUrl}/api/hero`);
     const response = await fetch(`${baseUrl}/api/hero`, {
       next: { revalidate: 3600 }, // Revalidate every hour
@@ -34,7 +25,6 @@ export async function fetchHeroSectionData() {
 
 export async function fetchGamesOnSale() {
   try {
-    const baseUrl = getBaseUrl();
     console.log('Fetching games on sale from:', `${baseUrl}/api/games-on-sale`);
     const response = await fetch(`${baseUrl}/api/games-on-sale`, {
       next: { revalidate: 3600 },
@@ -55,7 +45,6 @@ export async function fetchGamesOnSale() {
 
 export async function fetchFeaturedGames() {
   try {
-    const baseUrl = getBaseUrl();
     console.log('Fetching featured games from:', `${baseUrl}/api/featured-games`);
     const response = await fetch(`${baseUrl}/api/featured-games`, {
       next: { revalidate: 3600 },
@@ -76,7 +65,6 @@ export async function fetchFeaturedGames() {
 
 export async function fetchFreeGames() {
   try {
-    const baseUrl = getBaseUrl();
     console.log('Fetching free games from:', `${baseUrl}/api/free-games`);
     const response = await fetch(`${baseUrl}/api/free-games`, {
       next: { revalidate: 3600 },
@@ -97,7 +85,6 @@ export async function fetchFreeGames() {
 
 export async function fetchTopSellers() {
   try {
-    const baseUrl = getBaseUrl();
     console.log('Fetching top sellers from:', `${baseUrl}/api/top-sellers`);
     const response = await fetch(`${baseUrl}/api/top-sellers`, {
       next: { revalidate: 3600 },
@@ -118,7 +105,6 @@ export async function fetchTopSellers() {
 
 export async function fetchBestSellers() {
   try {
-    const baseUrl = getBaseUrl();
     console.log('Fetching best sellers from:', `${baseUrl}/api/best-sellers`);
     const response = await fetch(`${baseUrl}/api/best-sellers`, {
       next: { revalidate: 3600 },
@@ -139,7 +125,6 @@ export async function fetchBestSellers() {
 
 export async function fetchTopUpcomingGames() {
   try {
-    const baseUrl = getBaseUrl();
     console.log('Fetching upcoming games from:', `${baseUrl}/api/upcoming-games`);
     const response = await fetch(`${baseUrl}/api/upcoming-games`, {
       next: { revalidate: 3600 },
@@ -160,7 +145,6 @@ export async function fetchTopUpcomingGames() {
 
 export async function fetchResourceLinks() {
   try {
-    const baseUrl = getBaseUrl();
     console.log('Fetching from:', `${baseUrl}/api/resource-link`);
     const response = await fetch(`${baseUrl}/api/resource-link`, {
       next: { revalidate: 3600 },
