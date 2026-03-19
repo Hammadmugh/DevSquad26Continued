@@ -1,20 +1,14 @@
 'use client';
 
-import { topSellers, bestSellers, topUpcomingGames } from "@/data";
-
-interface GameItem {
-  id: number;
-  name: string;
-  image: string;
-  price: number | string;
-}
+import { useEffect } from "react";
+import { useGamesStore, Game } from "@/app/store/gamesStore";
 
 interface GameColumnProps {
   title: string;
-  games: GameItem[];
+  games: Game[];
 }
 
-function GameCard({ game }: { game: GameItem }) {
+function GameCard({ game }: { game: Game }) {
   return (
     <div className="flex gap-3 mb-[10px]">
       {/* Game Image */}
@@ -57,7 +51,7 @@ function GameColumn({ title, games }: GameColumnProps) {
 
       {/* Games List */}
       <div className="space-y-[10px]">
-        {games.map(game => (
+        {games.map((game) => (
           <GameCard key={game.id} game={game} />
         ))}
       </div>
@@ -66,6 +60,29 @@ function GameColumn({ title, games }: GameColumnProps) {
 }
 
 export default function TopGames() {
+  // Using Zustand store
+  const topSellers = useGamesStore((state) => state.topSellers);
+  const bestSellers = useGamesStore((state) => state.bestSellers);
+  const upcomingGames = useGamesStore((state) => state.upcomingGames);
+  const loading = useGamesStore(
+    (state) =>
+      state.loadingTopSellers || state.loadingBestSellers || state.loadingUpcomingGames
+  );
+
+  const fetchTopSellersData = useGamesStore((state) => state.fetchTopSellersData);
+  const fetchBestSellersData = useGamesStore((state) => state.fetchBestSellersData);
+  const fetchUpcomingGamesData = useGamesStore((state) => state.fetchUpcomingGamesData);
+
+  useEffect(() => {
+    fetchTopSellersData();
+    fetchBestSellersData();
+    fetchUpcomingGamesData();
+  }, [fetchTopSellersData, fetchBestSellersData, fetchUpcomingGamesData]);
+
+  if (loading) {
+    return <div className="bg-black px-4 md:px-0 text-white py-8">Loading games...</div>;
+  }
+
   return (
     <div className="bg-black px-4 md:px-0">
       <div>
@@ -88,7 +105,7 @@ export default function TopGames() {
           </div>
 
           {/* Top Upcoming */}
-          <GameColumn title="Top Upcoming game" games={topUpcomingGames} />
+          <GameColumn title="Top Upcoming game" games={upcomingGames} />
         </div>
       </div>
     </div>

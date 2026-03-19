@@ -1,13 +1,12 @@
 'use client';
 
-import { gamesOnSale } from "@/data";
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination } from 'swiper/modules';
+import { Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
-import 'swiper/css/pagination';
 import Image from "next/image";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
+import { useGamesStore } from "@/app/store/gamesStore";
 
 interface GamesOnSaleProps {
   title: string;
@@ -16,6 +15,19 @@ interface GamesOnSaleProps {
 export default function GamesOnSale({ title }: GamesOnSaleProps) {
   const prevRef = useRef(null);
   const nextRef = useRef(null);
+  
+  // Using Zustand store
+  const gamesOnSale = useGamesStore((state) => state.gamesOnSale);
+  const loadingGamesOnSale = useGamesStore((state) => state.loadingGamesOnSale);
+  const fetchGamesOnSaleData = useGamesStore((state) => state.fetchGamesOnSaleData);
+
+  useEffect(() => {
+    fetchGamesOnSaleData();
+  }, [fetchGamesOnSaleData]);
+
+  if (loadingGamesOnSale) {
+    return <div className="w-full py-4 text-white">Loading games...</div>;
+  }
 
   return (
     <div className="w-full py-4">
@@ -31,10 +43,9 @@ export default function GamesOnSale({ title }: GamesOnSaleProps) {
       </div>
 
       <Swiper
-        modules={[Navigation, Pagination]}
+        modules={[Navigation]}
         loop={true}
         navigation={{ prevEl: prevRef.current, nextEl: nextRef.current }}
-        pagination={{ clickable: true }}
         slidesPerView={1}
         spaceBetween={16}
         breakpoints={{
@@ -45,17 +56,17 @@ export default function GamesOnSale({ title }: GamesOnSaleProps) {
         }}
         onSwiper={(swiper) => {
           setTimeout(() => {
-            if (swiper.params.navigation && typeof swiper.params.navigation === 'object') {
-              (swiper.params.navigation as any).prevEl = prevRef.current;
-              (swiper.params.navigation as any).nextEl = nextRef.current;
-              swiper.navigation.destroy();
-              swiper.navigation.init();
-              swiper.navigation.update();
-            }
+            swiper.params.navigation = {
+              prevEl: prevRef.current,
+              nextEl: nextRef.current,
+            };
+            swiper.navigation.destroy();
+            swiper.navigation.init();
+            swiper.navigation.update();
           });
         }}
       >
-        {gamesOnSale.map(game => (
+        {gamesOnSale.map((game) => (
           <SwiperSlide key={game.id} className="flex justify-center">
             <div className="flex flex-col w-[213px] gap-2">
               <div className="w-[190px] h-[284px] rounded-md overflow-hidden">

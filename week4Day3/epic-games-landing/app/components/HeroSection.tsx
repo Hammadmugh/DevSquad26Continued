@@ -1,6 +1,14 @@
-import { HeroSectionData } from "@/data";
+import { fetchHeroSectionData } from "@/app/actions/gameActions";
 
-export default function HeroSection() {
+interface HeroGameData {
+  id: number;
+  image: string;
+  description: string;
+}
+
+export default async function HeroSection() {
+  const HeroSectionData: HeroGameData[] = await fetchHeroSectionData();
+
   return (
     <div className="flex flex-col lg:flex-row gap-3 md:gap-4 lg:gap-6 w-full overflow-hidden">
 
@@ -45,7 +53,7 @@ export default function HeroSection() {
         w-full lg:w-[260px] 
         overflow-x-auto lg:overflow-visible
       ">
-        {HeroSectionData.map((game) => (
+        {HeroSectionData.map((game: HeroGameData) => (
           <div
             key={game.id}
             className="

@@ -1,12 +1,14 @@
-"use client";
-
 import Image from "next/image";
-import { resourceLinks } from "@/data";
+import { fetchResourceLinks } from "@/app/actions/gameActions";
+import ScrollTopButton from "./ScrollTopButton";
 
-export default function Footer() {
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+interface ResourceLink {
+  category: string;
+  links: string[];
+}
+
+export default async function Footer() {
+  const resourceLinks: ResourceLink[] = await fetchResourceLinks();
 
   return (
     <footer className="bg-[#202020] py-8 md:py-12 px-4 md:px-8 relative">
@@ -23,12 +25,7 @@ export default function Footer() {
             <Image src="/youtube.png" alt="youtube" height={24} width={24} />
           </a>
         </div>
-        <button
-          onClick={scrollToTop}
-          className=" w-8 h-8 cursor-pointer flex items-center justify-center transition rounded"
-        >
-            <Image src={"/move-to-up.png"} alt="move" width={32} height={32}/>
-        </button>
+        <ScrollTopButton />
       </div>
 
       {/* Resources Section */}
