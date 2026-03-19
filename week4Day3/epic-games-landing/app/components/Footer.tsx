@@ -1,14 +1,23 @@
+'use client';
+
 import Image from "next/image";
-import { fetchResourceLinks } from "@/app/actions/gameActions";
+import { useEffect } from "react";
+import { useGamesStore } from "@/app/store/gamesStore";
 import ScrollTopButton from "./ScrollTopButton";
 
-interface ResourceLink {
-  category: string;
-  links: string[];
-}
+export default function Footer() {
+  // Using Zustand store
+  const resourceLinks = useGamesStore((state) => state.resourceLinks);
+  const loading = useGamesStore((state) => state.loadingResourceLinks);
+  const fetchResourceLinksData = useGamesStore((state) => state.fetchResourceLinksData);
 
-export default async function Footer() {
-  const resourceLinks: ResourceLink[] = await fetchResourceLinks();
+  useEffect(() => {
+    fetchResourceLinksData();
+  }, [fetchResourceLinksData]);
+
+  if (loading) {
+    return <div className="w-full py-4 text-white">Loading footer...</div>;
+  }
 
   return (
     <footer className="bg-[#202020] py-8 md:py-12 px-4 md:px-8 relative">

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { fetchGamesOnSale, fetchFeaturedGames, fetchFreeGames, fetchTopSellers, fetchBestSellers, fetchTopUpcomingGames } from '@/app/actions/gameActions';
+import { fetchHeroSectionData, fetchResourceLinks, fetchGamesOnSale, fetchFeaturedGames, fetchFreeGames, fetchTopSellers, fetchBestSellers, fetchTopUpcomingGames } from '@/app/actions/gameActions';
 
 export interface Game {
   id: number;
@@ -16,8 +16,15 @@ export interface Game {
   date?: string;
 }
 
+export interface ResourceLink {
+  category: string;
+  links: string[];
+}
+
 interface GamesStore {
   // Games data
+  heroSlider: Game[];
+  resourceLinks: ResourceLink[];
   gamesOnSale: Game[];
   featuredGames: Game[];
   freeGames: Game[];
@@ -26,6 +33,8 @@ interface GamesStore {
   upcomingGames: Game[];
 
   // Loading states
+  loadingHeroSlider: boolean;
+  loadingResourceLinks: boolean;
   loadingGamesOnSale: boolean;
   loadingFeaturedGames: boolean;
   loadingFreeGames: boolean;
@@ -34,6 +43,8 @@ interface GamesStore {
   loadingUpcomingGames: boolean;
 
   // Error states
+  errorHeroSlider: string | null;
+  errorResourceLinks: string | null;
   errorGamesOnSale: string | null;
   errorFeaturedGames: string | null;
   errorFreeGames: string | null;
@@ -42,6 +53,8 @@ interface GamesStore {
   errorUpcomingGames: string | null;
 
   // Fetch actions
+  fetchHeroSliderData: () => Promise<void>;
+  fetchResourceLinksData: () => Promise<void>;
   fetchGamesOnSaleData: () => Promise<void>;
   fetchFeaturedGamesData: () => Promise<void>;
   fetchFreeGamesData: () => Promise<void>;
@@ -55,6 +68,8 @@ interface GamesStore {
 
 export const useGamesStore = create<GamesStore>((set) => ({
   // Initial state
+  heroSlider: [],
+  resourceLinks: [],
   gamesOnSale: [],
   featuredGames: [],
   freeGames: [],
@@ -62,6 +77,8 @@ export const useGamesStore = create<GamesStore>((set) => ({
   bestSellers: [],
   upcomingGames: [],
 
+  loadingHeroSlider: false,
+  loadingResourceLinks: false,
   loadingGamesOnSale: false,
   loadingFeaturedGames: false,
   loadingFreeGames: false,
@@ -69,6 +86,8 @@ export const useGamesStore = create<GamesStore>((set) => ({
   loadingBestSellers: false,
   loadingUpcomingGames: false,
 
+  errorHeroSlider: null,
+  errorResourceLinks: null,
   errorGamesOnSale: null,
   errorFeaturedGames: null,
   errorFreeGames: null,
@@ -76,7 +95,33 @@ export const useGamesStore = create<GamesStore>((set) => ({
   errorBestSellers: null,
   errorUpcomingGames: null,
 
-  // Fetch games on sale
+  // Fetch hero slider
+  fetchHeroSliderData: async () => {
+    set({ loadingHeroSlider: true, errorHeroSlider: null });
+    try {
+      const data = await fetchHeroSectionData();
+      set({ heroSlider: data, loadingHeroSlider: false });
+    } catch (error) {
+      set({ 
+        errorHeroSlider: error instanceof Error ? error.message : 'Failed to fetch hero slider',
+        loadingHeroSlider: false 
+      });
+    }
+  },
+
+  // Fetch resource links
+  fetchResourceLinksData: async () => {
+    set({ loadingResourceLinks: true, errorResourceLinks: null });
+    try {
+      const data = await fetchResourceLinks();
+      set({ resourceLinks: data, loadingResourceLinks: false });
+    } catch (error) {
+      set({ 
+        errorResourceLinks: error instanceof Error ? error.message : 'Failed to fetch resource links',
+        loadingResourceLinks: false 
+      });
+    }
+  },
   fetchGamesOnSaleData: async () => {
     set({ loadingGamesOnSale: true, errorGamesOnSale: null });
     try {

@@ -1,13 +1,21 @@
-import { fetchHeroSectionData } from "@/app/actions/gameActions";
+'use client';
 
-interface HeroGameData {
-  id: number;
-  image: string;
-  description: string;
-}
+import { useEffect } from "react";
+import { useGamesStore } from "@/app/store/gamesStore";
 
-export default async function HeroSection() {
-  const HeroSectionData: HeroGameData[] = await fetchHeroSectionData();
+export default function HeroSection() {
+  // Using Zustand store
+  const heroSlider = useGamesStore((state) => state.heroSlider);
+  const loading = useGamesStore((state) => state.loadingHeroSlider);
+  const fetchHeroSliderData = useGamesStore((state) => state.fetchHeroSliderData);
+
+  useEffect(() => {
+    fetchHeroSliderData();
+  }, [fetchHeroSliderData]);
+
+  if (loading) {
+    return <div className="w-full h-[250px] sm:h-[320px] md:h-[360px] lg:h-[432px] bg-gray-800 rounded-2xl animate-pulse"></div>;
+  }
 
   return (
     <div className="flex flex-col lg:flex-row gap-3 md:gap-4 lg:gap-6 w-full overflow-hidden">
@@ -53,7 +61,7 @@ export default async function HeroSection() {
         w-full lg:w-[260px] 
         overflow-x-auto lg:overflow-visible
       ">
-        {HeroSectionData.map((game: HeroGameData) => (
+        {heroSlider.map((game) => (
           <div
             key={game.id}
             className="
