@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setActiveRoom } from "../store/chatSlice";
 import { useGetRoomsQuery } from "../store/chatApi";
 
-export default function Sidebar() {
+export default function Sidebar({ onRoomSelect }) {
   const dispatch = useDispatch();
   const { activeRoom, username, roomUserCounts } = useSelector((s) => s.chat);
   const { data: rooms = [], isLoading } = useGetRoomsQuery();
@@ -31,7 +31,7 @@ export default function Sidebar() {
             return (
               <button
                 key={room.id}
-                onClick={() => dispatch(setActiveRoom(room.id))}
+                onClick={() => { dispatch(setActiveRoom(room.id)); onRoomSelect?.(); }}
                 className={`w-full text-left rounded-lg px-3 py-2.5 text-sm transition-colors flex items-center justify-between group ${
                   isActive
                     ? "bg-indigo-600 text-white"

@@ -22,7 +22,7 @@ export default function MessageBubble({ message }) {
       )}
       <div className={`flex items-end gap-1.5 ${isOwn ? "flex-row-reverse" : "flex-row"}`}>
         <div
-          className={`max-w-xs lg:max-w-md px-4 py-2.5 rounded-2xl text-sm shadow-sm ${
+          className={`max-w-[75vw] sm:max-w-xs lg:max-w-md px-4 py-2.5 rounded-2xl text-sm shadow-sm break-words ${
             isOwn
               ? "bg-indigo-600 text-white rounded-br-sm"
               : "bg-white text-gray-800 rounded-bl-sm border border-gray-100"

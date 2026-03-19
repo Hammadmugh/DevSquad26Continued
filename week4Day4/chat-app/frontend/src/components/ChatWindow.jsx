@@ -4,7 +4,7 @@ import { useGetMessagesQuery, useGetRoomsQuery } from "../store/chatApi";
 import MessageBubble from "./MessageBubble";
 import MessageInput from "./MessageInput";
 
-export default function ChatWindow() {
+export default function ChatWindow({ onMenuClick }) {
   const { activeRoom, typingUsers, roomUserCounts } = useSelector((s) => s.chat);
   const { data: messages = [], isLoading, isError } = useGetMessagesQuery(activeRoom);
   const { data: rooms = [] } = useGetRoomsQuery();
@@ -21,16 +21,26 @@ export default function ChatWindow() {
   return (
     <div className="flex flex-col flex-1 h-full min-w-0">
       {/* Header */}
-      <header className="flex items-center justify-between px-5 py-3.5 border-b border-gray-200 bg-white shrink-0">
-        <div>
-          <h2 className="font-semibold text-gray-800 text-base">
+      <header className="flex items-center justify-between px-4 py-3.5 border-b border-gray-200 bg-white shrink-0 gap-3">
+        {/* Hamburger — mobile only */}
+        <button
+          onClick={onMenuClick}
+          className="md:hidden text-gray-500 hover:text-indigo-600 shrink-0 p-1 -ml-1"
+          aria-label="Open sidebar"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+          </svg>
+        </button>
+        <div className="flex-1 min-w-0">
+          <h2 className="font-semibold text-gray-800 text-base truncate">
             # {currentRoom?.name ?? activeRoom}
           </h2>
           {currentRoom?.description && (
-            <p className="text-xs text-gray-400 mt-0.5">{currentRoom.description}</p>
+            <p className="text-xs text-gray-400 mt-0.5 truncate">{currentRoom.description}</p>
           )}
         </div>
-        <div className="flex items-center gap-2 text-sm text-gray-500">
+        <div className="flex items-center gap-2 text-sm text-gray-500 shrink-0">
           <span className="w-2 h-2 rounded-full bg-green-400 inline-block"></span>
           {onlineCount != null ? `${onlineCount} online` : ""}
         </div>
