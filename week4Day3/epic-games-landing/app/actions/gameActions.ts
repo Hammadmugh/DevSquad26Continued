@@ -1,113 +1,180 @@
 'use server';
 
+// Helper function to get the base URL for API calls
+function getBaseUrl() {
+  // For Vercel production/preview deployments
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+  
+  // For local development
+  return 'http://localhost:3000';
+}
+
 export async function fetchHeroSectionData() {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/hero`, {
+    const baseUrl = getBaseUrl();
+    console.log('Fetching hero from:', `${baseUrl}/api/hero`);
+    const response = await fetch(`${baseUrl}/api/hero`, {
       next: { revalidate: 3600 }, // Revalidate every hour
     });
     
-    if (!response.ok) throw new Error('Failed to fetch hero data');
-    return await response.json();
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`API returned ${response.status}: ${errorText}`);
+    }
+    const res = await response.json();
+    console.log('✅ Hero data fetched:', res);
+    return res;
   } catch (error) {
-    console.error('Error fetching hero data:', error);
+    console.error('❌ Error fetching hero data:', error);
     return [];
   }
 }
 
 export async function fetchGamesOnSale() {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/games-on-sale`, {
+    const baseUrl = getBaseUrl();
+    console.log('Fetching games on sale from:', `${baseUrl}/api/games-on-sale`);
+    const response = await fetch(`${baseUrl}/api/games-on-sale`, {
       next: { revalidate: 3600 },
     });
     
-    if (!response.ok) throw new Error('Failed to fetch games on sale');
-    return await response.json();
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`API returned ${response.status}: ${errorText}`);
+    }
+    const res = await response.json();
+    console.log('✅ Games on sale fetched:', res);
+    return res;
   } catch (error) {
-    console.error('Error fetching games on sale:', error);
+    console.error('❌ Error fetching games on sale:', error);
     return [];
   }
 }
 
 export async function fetchFeaturedGames() {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/featured-games`, {
+    const baseUrl = getBaseUrl();
+    console.log('Fetching featured games from:', `${baseUrl}/api/featured-games`);
+    const response = await fetch(`${baseUrl}/api/featured-games`, {
       next: { revalidate: 3600 },
     });
     
-    if (!response.ok) throw new Error('Failed to fetch featured games');
-    return await response.json();
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`API returned ${response.status}: ${errorText}`);
+    }
+    const res = await response.json();
+    console.log('✅ Featured games fetched:', res);
+    return res;
   } catch (error) {
-    console.error('Error fetching featured games:', error);
+    console.error('❌ Error fetching featured games:', error);
     return [];
   }
 }
 
 export async function fetchFreeGames() {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/free-games`, {
+    const baseUrl = getBaseUrl();
+    console.log('Fetching free games from:', `${baseUrl}/api/free-games`);
+    const response = await fetch(`${baseUrl}/api/free-games`, {
       next: { revalidate: 3600 },
     });
     
-    if (!response.ok) throw new Error('Failed to fetch free games');
-    return await response.json();
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`API returned ${response.status}: ${errorText}`);
+    }
+    const res = await response.json();
+    console.log('✅ Free games fetched:', res);
+    return res;
   } catch (error) {
-    console.error('Error fetching free games:', error);
+    console.error('❌ Error fetching free games:', error);
     return [];
   }
 }
 
 export async function fetchTopSellers() {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/top-sellers`, {
+    const baseUrl = getBaseUrl();
+    console.log('Fetching top sellers from:', `${baseUrl}/api/top-sellers`);
+    const response = await fetch(`${baseUrl}/api/top-sellers`, {
       next: { revalidate: 3600 },
     });
     
-    if (!response.ok) throw new Error('Failed to fetch top sellers');
-    return await response.json();
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`API returned ${response.status}: ${errorText}`);
+    }
+    const res = await response.json();
+    console.log('✅ Top sellers fetched:', res);
+    return res;
   } catch (error) {
-    console.error('Error fetching top sellers:', error);
+    console.error('❌ Error fetching top sellers:', error);
     return [];
   }
 }
 
 export async function fetchBestSellers() {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/best-sellers`, {
+    const baseUrl = getBaseUrl();
+    console.log('Fetching best sellers from:', `${baseUrl}/api/best-sellers`);
+    const response = await fetch(`${baseUrl}/api/best-sellers`, {
       next: { revalidate: 3600 },
     });
     
-    if (!response.ok) throw new Error('Failed to fetch best sellers');
-    return await response.json();
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`API returned ${response.status}: ${errorText}`);
+    }
+    const res = await response.json();
+    console.log('✅ Best sellers fetched:', res);
+    return res;
   } catch (error) {
-    console.error('Error fetching best sellers:', error);
+    console.error('❌ Error fetching best sellers:', error);
     return [];
   }
 }
 
 export async function fetchTopUpcomingGames() {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/upcoming-games`, {
+    const baseUrl = getBaseUrl();
+    console.log('Fetching upcoming games from:', `${baseUrl}/api/upcoming-games`);
+    const response = await fetch(`${baseUrl}/api/upcoming-games`, {
       next: { revalidate: 3600 },
     });
     
-    if (!response.ok) throw new Error('Failed to fetch upcoming games');
-    return await response.json();
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`API returned ${response.status}: ${errorText}`);
+    }
+    const res = await response.json();
+    console.log('✅ Upcoming games fetched:', res);
+    return res;
   } catch (error) {
-    console.error('Error fetching upcoming games:', error);
+    console.error('❌ Error fetching upcoming games:', error);
     return [];
   }
 }
 
 export async function fetchResourceLinks() {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/resource-link`, {
+    const baseUrl = getBaseUrl();
+    console.log('Fetching from:', `${baseUrl}/api/resource-link`);
+    const response = await fetch(`${baseUrl}/api/resource-link`, {
       next: { revalidate: 3600 },
     });
     
-    if (!response.ok) throw new Error('Failed to fetch resource links');
-    return await response.json();
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`API returned ${response.status}: ${errorText}`);
+    }
+    const res = await response.json();
+    console.log('✅ Resource links fetched:', res);
+    return res;
   } catch (error) {
-    console.error('Error fetching resource links:', error);
+    console.error('❌ Error fetching resource links:', error);
     return [];
   }
 }
