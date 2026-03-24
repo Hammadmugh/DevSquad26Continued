@@ -7,6 +7,7 @@ const TYPING_TIMEOUT = 2000;
 
 export default function MessageInput() {
   const [text, setText] = useState("");
+  const [sendError, setSendError] = useState("");
   const { username, activeRoom } = useSelector((s) => s.chat);
   const [sendMessage, { isLoading }] = useSendMessageMutation();
   const typingTimerRef = useRef(null);
@@ -37,19 +38,26 @@ export default function MessageInput() {
     clearTimeout(typingTimerRef.current);
     emitStopTyping();
     setText("");
+    setSendError("");
 
     try {
       await sendMessage({ roomId: activeRoom, username, text: trimmed }).unwrap();
     } catch (err) {
       console.error("Failed to send message:", err);
+      setText(trimmed); // restore so user can retry
+      setSendError("Failed to send. Please try again.");
     }
   };
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex items-center gap-3 px-4 py-3 border-t border-gray-200 bg-white"
+      className="flex flex-col gap-1 px-4 pt-2 pb-3 border-t border-gray-200 bg-white"
     >
+      {sendError && (
+        <p className="text-xs text-red-500 px-1">{sendError}</p>
+      )}
+      <div className="flex items-center gap-3">
       <input
         type="text"
         value={text}
@@ -69,6 +77,7 @@ export default function MessageInput() {
           <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
         </svg>
       </button>
+      </div>
     </form>
   );
 }

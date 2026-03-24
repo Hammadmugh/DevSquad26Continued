@@ -5,7 +5,7 @@ const chatSlice = createSlice({
   initialState: {
     username: "",
     activeRoom: "general",
-    typingUsers: [], // [{ username }]
+    typingUsers: [], // ["username1", "username2"]
     roomUserCounts: {}, // { roomId: count }
   },
   reducers: {

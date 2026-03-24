@@ -19,6 +19,9 @@ router.post("/", (req, res) => {
   if (!roomId || !username || !text || !text.trim()) {
     return res.status(400).json({ error: "roomId, username, and text are required" });
   }
+  if (username.length < 2 || username.length > 20) {
+    return res.status(400).json({ error: "Username must be 2–20 characters" });
+  }
   if (!messages[roomId]) {
     return res.status(404).json({ error: "Room not found" });
   }
