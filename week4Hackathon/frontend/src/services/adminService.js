@@ -1,7 +1,8 @@
 import { authService } from "./authService";
+import { API_CONFIG } from "../config/apiConfig";
 
 // API service for admin operations
-const API_BASE_URL = "https://week4hackathonbackend.vercel.app/api/admin";
+const API_BASE_URL = `${API_CONFIG.ADMIN_BASE_URL}`;
 
 const getHeaders = () => {
   const token = authService.getToken();

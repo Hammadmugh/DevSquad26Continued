@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ChevronLeft, Lock } from 'lucide-react';
+import { API_CONFIG } from '../config/apiConfig';
 
 const PaymentPage = () => {
   const { planId } = useParams();
@@ -76,6 +77,23 @@ const PaymentPage = () => {
       setError('Please enter a valid expiry date (MM/YY)');
       return false;
     }
+
+    // Validate expiry date is not in the past
+    const [month, year] = formData.expiryDate.split('/');
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth() + 1;
+    
+    // Convert YY to YYYY (assuming 2000s for now)
+    const fullYear = parseInt(`20${year}`);
+    const expiryMonth = parseInt(month);
+    
+    // Check if expiry date is in the past
+    if (fullYear < currentYear || (fullYear === currentYear && expiryMonth < currentMonth)) {
+      setError('Expiry date cannot be in the past');
+      return false;
+    }
+
     if (!formData.cvv || formData.cvv.length !== 3) {
       setError('Please enter a valid 3-digit CVV');
       return false;
@@ -122,7 +140,7 @@ const PaymentPage = () => {
         };
       }
 
-      const response = await fetch('https://week4hackathonbackend.vercel.app/api/auth/subscribe', {
+      const response = await fetch(`${API_CONFIG.AUTH_BASE_URL}/subscribe`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -194,14 +212,14 @@ const PaymentPage = () => {
 
         {/* Error Message */}
         {error && (
-          <div className="bg-red-500 bg-opacity-10 border border-red-500/50 text-red-400 px-4 py-3 rounded-lg mb-6 text-sm">
+          <div className="bg-red-500 bg-opacity-10 border border-red-500/50 text-white px-4 py-3 rounded-lg mb-6 text-sm">
             {error}
           </div>
         )}
 
         {/* Success Message */}
         {success && (
-          <div className="bg-green-500 bg-opacity-10 border border-green-500/50 text-green-400 px-4 py-3 rounded-lg mb-6 text-sm">
+          <div className="bg-green-500 bg-opacity-10 border border-green-500/50 text-white px-4 py-3 rounded-lg mb-6 text-sm">
             {success}
           </div>
         )}

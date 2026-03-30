@@ -80,7 +80,7 @@ const AdminDashboard = () => {
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         {error && (
-          <div className="bg-red-500 bg-opacity-10 border border-red-500/50 text-red-400 px-4 py-3 rounded-xl mb-6 text-sm">
+          <div className="bg-red-500 bg-opacity-10 border border-red-500/50 text-white px-4 py-3 rounded-xl mb-6 text-sm">
             {error}
           </div>
         )}

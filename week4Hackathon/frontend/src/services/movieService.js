@@ -1,5 +1,7 @@
 // API service for movies
-const API_BASE_URL = "https://week4hackathonbackend.vercel.app/api/movies";
+import { API_CONFIG } from "../config/apiConfig";
+
+const API_BASE_URL = `${API_CONFIG.MOVIES_BASE_URL}`;
 
 console.log("🎬 MovieService initialized with API Base URL:", API_BASE_URL);
 

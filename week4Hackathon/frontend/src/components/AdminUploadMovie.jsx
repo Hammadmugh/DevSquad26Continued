@@ -95,7 +95,48 @@ const AdminUploadMovie = ({ onSuccess }) => {
         throw new Error('Poster image is required');
       }
 
-      const response = await uploadService.uploadMovie(formData, imageFile, trailerFile, bannerFile);
+      console.log('📤 Starting upload process with direct Cloudinary upload...');
+
+      // Upload poster image to Cloudinary
+      console.log('📸 Uploading poster image...');
+      const imageUrl = await uploadService.uploadToCloudinary(imageFile, 'poster');
+      console.log('✅ Poster uploaded:', imageUrl);
+
+      // Upload trailer if provided
+      let trailerUrl = null;
+      if (trailerFile) {
+        console.log('🎬 Uploading trailer video...');
+        trailerUrl = await uploadService.uploadToCloudinary(trailerFile, 'trailer');
+        console.log('✅ Trailer uploaded:', trailerUrl);
+      }
+
+      // Upload banner if provided
+      let bannerUrl = null;
+      if (bannerFile) {
+        console.log('🖼️ Uploading banner image...');
+        bannerUrl = await uploadService.uploadToCloudinary(bannerFile, 'banner');
+        console.log('✅ Banner uploaded:', bannerUrl);
+      }
+
+      // Save movie metadata to backend
+      console.log('💾 Saving movie metadata...');
+      const movieData = {
+        title: formData.title,
+        description: formData.description,
+        duration: formData.duration,
+        genres: formData.genres,
+        director: formData.director,
+        cast: formData.cast,
+        year: formData.year,
+        contentType: formData.contentType,
+        rating: formData.rating,
+        imageUrl,
+        trailerUrl,
+        bannerUrl,
+      };
+
+      const response = await uploadService.saveMovieWithUrls(movieData);
+      console.log('✅ Movie saved successfully:', response.data);
 
       setSuccess('Movie/Show uploaded successfully!');
       
@@ -123,6 +164,7 @@ const AdminUploadMovie = ({ onSuccess }) => {
       // Clear success message after 3 seconds
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
+      console.error('❌ Upload error:', err);
       setError(err.message || 'Failed to upload movie');
     } finally {
       setLoading(false);
@@ -134,13 +176,13 @@ const AdminUploadMovie = ({ onSuccess }) => {
       <h2 className="text-2xl font-bold text-white mb-6">Upload Movie/Show</h2>
 
       {error && (
-        <div className="bg-red-500 bg-opacity-10 border border-red-500/50 text-red-400 px-4 py-3 rounded-lg mb-6 text-sm">
+        <div className="bg-red-500 bg-opacity-10 border border-red-500/50 text-white px-4 py-3 rounded-lg mb-6 text-sm">
           {error}
         </div>
       )}
 
       {success && (
-        <div className="bg-green-500 bg-opacity-10 border border-green-500/50 text-green-400 px-4 py-3 rounded-lg mb-6 text-sm">
+        <div className="bg-green-500 bg-opacity-10 border border-green-500/50 text-white px-4 py-3 rounded-lg mb-6 text-sm">
           {success}
         </div>
       )}

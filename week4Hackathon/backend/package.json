@@ -5,13 +5,14 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon src/server.js",
+    "dev": "nodemon server.js",
     "seed": "node src/seeds/seed.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "cloudinary": "^2.9.0",
     "cors": "^2.8.6",
+    
     "dotenv": "^17.2.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",

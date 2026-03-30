@@ -93,13 +93,13 @@ const AdminMoviesList = ({ onRefresh }) => {
   return (
     <div className="space-y-6">
       {error && (
-        <div className="bg-red-500 bg-opacity-10 border border-red-500/50 text-red-400 px-4 py-3 rounded-lg text-sm">
+        <div className="bg-red-500 bg-opacity-10 border border-red-500/50 text-white px-4 py-3 rounded-lg text-sm">
           {error}
         </div>
       )}
 
       {success && (
-        <div className="bg-green-500 bg-opacity-10 border border-green-500/50 text-green-400 px-4 py-3 rounded-lg text-sm">
+        <div className="bg-green-500 bg-opacity-10 border border-green-500/50 text-white px-4 py-3 rounded-lg text-sm">
           {success}
         </div>
       )}

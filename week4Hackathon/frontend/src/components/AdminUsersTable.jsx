@@ -40,7 +40,7 @@ const AdminUsersTable = ({ users: initialUsers, onRefresh }) => {
   return (
     <div className="bg-neutral-900 border border-neutral-800 rounded-xl overflow-hidden shadow-xl">
       {error && (
-        <div className="bg-red-500 bg-opacity-10 border-b border-red-500/50 text-red-400 px-6 py-3 text-sm">
+        <div className="bg-red-500 bg-opacity-10 border-b border-red-500/50 text-white px-6 py-3 text-sm">
           {error}
         </div>
       )}

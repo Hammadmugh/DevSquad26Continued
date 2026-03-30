@@ -1,5 +1,7 @@
 // API service for authentication
-const API_BASE_URL = "https://week4hackathonbackend.vercel.app/api/auth";
+import { API_CONFIG } from "../config/apiConfig";
+
+const API_BASE_URL = `${API_CONFIG.AUTH_BASE_URL}`;
 
 export const authService = {
   // Register user
@@ -74,5 +76,36 @@ export const authService = {
   isAdmin: () => {
     const user = authService.getCurrentUser();
     return user && user.role === "admin";
+  },
+
+  // Get user profile with subscription details
+  getUserProfile: async () => {
+    try {
+      const token = authService.getToken();
+      if (!token) {
+        throw new Error("No authentication token found");
+      }
+
+      console.log("🔐 Token found, fetching profile from:", `${API_BASE_URL}/profile`);
+      
+      const response = await fetch(`${API_BASE_URL}/profile`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+
+      console.log("📡 Profile response status:", response.status, response.statusText);
+      
+      const data = await response.json();
+      console.log("📦 Profile response data:", data);
+      
+      if (!response.ok) throw new Error(data.message || "Failed to fetch profile");
+      return data.data.user;
+    } catch (error) {
+      console.error("❌ Error fetching user profile:", error.message);
+      throw error;
+    }
   },
 };

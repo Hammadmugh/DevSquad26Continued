@@ -8,6 +8,8 @@ const SubscriptionsPage = () => {
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [currentSubscription, setCurrentSubscription] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const isAuthenticated = authService.isAuthenticated();
 
   const plans = [
     {
@@ -61,16 +63,10 @@ const SubscriptionsPage = () => {
       return;
     }
 
-    // Check if user already has active subscription
-    const subscription = localStorage.getItem('userSubscription');
-    
-    if (subscription) {
-      const subData = JSON.parse(subscription);
-      if (subData.status === 'active') {
-        setCurrentSubscription(subData);
-        setShowModal(true);
-        return;
-      }
+    // If user already has active subscription, show modal
+    if (currentSubscription?.status === 'active') {
+      setShowModal(true);
+      return;
     }
 
     setSelectedPlan(planId);
@@ -78,26 +74,75 @@ const SubscriptionsPage = () => {
     navigate(`/payment/${planId}`);
   };
 
+  const fetchSubscription = async () => {
+    try {
+      if (!isAuthenticated) {
+        console.log("⚠️ User not authenticated, skipping subscription fetch");
+        setCurrentSubscription(null);
+        return;
+      }
+
+      setIsLoading(true);
+      console.log("🔄 Fetching user profile...");
+      const userProfile = await authService.getUserProfile();
+      
+      console.log("📋 User Profile Response:", {
+        subscriptionPlanId: userProfile.subscriptionPlanId,
+        subscriptionPlanName: userProfile.subscriptionPlanName,
+        subscriptionStatus: userProfile.subscriptionStatus,
+        allKeys: Object.keys(userProfile)
+      });
+      
+      if (userProfile.subscriptionStatus === "active" && userProfile.subscriptionPlanId) {
+        const subscription = {
+          planId: userProfile.subscriptionPlanId,
+          planName: userProfile.subscriptionPlanName,
+          status: userProfile.subscriptionStatus,
+          startDate: userProfile.subscriptionStartDate,
+          endDate: userProfile.subscriptionEndDate,
+          trialEndDate: userProfile.trialEndDate,
+        };
+        console.log("✅ Active subscription found:", subscription);
+        setCurrentSubscription(subscription);
+      } else {
+        console.log("⚠️ No active subscription - Status:", userProfile.subscriptionStatus, "PlanId:", userProfile.subscriptionPlanId);
+        setCurrentSubscription(null);
+      }
+    } catch (error) {
+      console.error("❌ Error fetching subscription:", error);
+      setCurrentSubscription(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Get current subscription to check if user has one
   React.useEffect(() => {
-    const subscription = localStorage.getItem('userSubscription');
-    if (subscription) {
-      const subData = JSON.parse(subscription);
-      setCurrentSubscription(subData);
-    }
-  }, []);
+    fetchSubscription();
+  }, [isAuthenticated]);
 
   return (
     <div className="min-h-screen bg-black pt-24 pb-12">
       {/* Header */}
       <div className="px-4 sm:px-6 lg:px-0 lg:max-w-[1280px] md:max-w-[1024px] max-w-[358px] mx-auto mb-12">
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-white hover:text-gray-300 transition mb-8"
-        >
-          <ChevronLeft size={24} />
-          <span className="text-sm font-medium">Back</span>
-        </button>
+        <div className="flex items-center justify-between mb-8">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-2 text-white hover:text-gray-300 transition"
+          >
+            <ChevronLeft size={24} />
+            <span className="text-sm font-medium">Back</span>
+          </button>
+          {isAuthenticated && (
+            <button
+              onClick={fetchSubscription}
+              className="px-4 py-2 text-sm bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg transition"
+              disabled={isLoading}
+            >
+              {isLoading ? 'Loading...' : 'Refresh'}
+            </button>
+          )}
+        </div>
 
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
@@ -107,13 +152,30 @@ const SubscriptionsPage = () => {
             Select the perfect plan for you and start watching your favorite movies and shows.
             All plans include a 7-day free trial.
           </p>
+          {currentSubscription && (
+            <p className="text-green-400 text-sm mt-4">
+              ✓ You are currently subscribed to <span className="font-semibold">{currentSubscription.planName}</span> plan
+            </p>
+          )}
         </div>
       </div>
 
       {/* Pricing Cards */}
       <div className="px-4 sm:px-6 lg:px-0 lg:max-w-[1280px] md:max-w-[1024px] max-w-[358px] mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-          {plans.map((plan) => (
+          {plans.map((plan) => {
+            const planIdMatch = currentSubscription?.planId === plan.id;
+            const statusMatch = currentSubscription?.status === 'active';
+            const isCurrentPlan = isAuthenticated && planIdMatch && statusMatch;
+            
+            console.log(`\n📌 Plan: "${plan.id}"`);
+            console.log(`   - currentSubscription?.planId: "${currentSubscription?.planId}"`);
+            console.log(`   - plan.id: "${plan.id}"`);
+            console.log(`   - PlanId Match: ${planIdMatch}`);
+            console.log(`   - Status Match: ${statusMatch}`);
+            console.log(`   - Is Current Plan: ${isCurrentPlan}`);
+            
+            return (
             <div
               key={plan.id}
               className={`relative bg-[#141414] rounded-lg overflow-hidden border transition transform hover:scale-105 ${
@@ -121,7 +183,7 @@ const SubscriptionsPage = () => {
                   ? 'border-[#E60000] shadow-lg shadow-red-500/50 md:scale-105'
                   : 'border-[#262626]'
               } ${
-                currentSubscription?.planId === plan.id && currentSubscription?.status === 'active'
+                isCurrentPlan
                   ? 'ring-2 ring-green-500'
                   : ''
               }`}
@@ -134,7 +196,7 @@ const SubscriptionsPage = () => {
               )}
 
               {/* Current Plan Badge */}
-              {currentSubscription?.planId === plan.id && currentSubscription?.status === 'active' && (
+              {isCurrentPlan && (
                 <div className="absolute top-0 right-0 bg-green-500 text-white py-2 px-4 text-center text-sm font-bold rounded-bl-lg">
                   CURRENT PLAN
                 </div>
@@ -176,7 +238,8 @@ const SubscriptionsPage = () => {
                 </div>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 

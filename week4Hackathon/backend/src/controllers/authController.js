@@ -128,4 +128,36 @@ const subscribe = async (req, res, next) => {
   }
 };
 
-module.exports = { register, login, subscribe };
+// Get user profile with subscription data
+const getProfile = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const user = await User.findById(userId).select("-password");
+
+    if (!user) {
+      res.status(constants.NOT_FOUND);
+      throw new Error("User not found");
+    }
+
+    res.status(200).json({
+      success: true,
+      data: {
+        user: {
+          id: user._id,
+          email: user.email,
+          subscriptionPlanId: user.subscriptionPlanId,
+          subscriptionPlanName: user.subscriptionPlanName,
+          subscriptionStatus: user.subscriptionStatus,
+          subscriptionStartDate: user.subscriptionStartDate,
+          subscriptionEndDate: user.subscriptionEndDate,
+          trialEndDate: user.trialEndDate,
+        },
+      },
+      message: "Profile retrieved successfully",
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = { register, login, subscribe, getProfile };
