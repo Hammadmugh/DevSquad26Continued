@@ -1,0 +1,13 @@
+{"timestamp":"00:00:03.623","source":"Server","level":"LOG","message":""}
+{"timestamp":"00:00:21.571","source":"Server","level":"LOG","message":"○ Compiling / ..."}
+{"timestamp":"00:04:38.184","source":"Browser","level":"LOG","message":"Connected to server"}
+{"timestamp":"00:04:49.129","source":"Browser","level":"LOG","message":"Connected to server"}
+{"timestamp":"00:24:42.403","source":"Server","level":"LOG","message":"  Reload env: .env"}
+{"timestamp":"00:26:09.073","source":"Browser","level":"LOG","message":"Connected to server"}
+{"timestamp":"00:35:17.759","source":"Browser","level":"LOG","message":"Disconnected from server"}
+{"timestamp":"00:35:21.745","source":"Browser","level":"LOG","message":"Connected to server"}
+{"timestamp":"00:37:43.755","source":"Server","level":"LOG","message":"  Reload env: .env"}
+{"timestamp":"00:38:01.481","source":"Server","level":"LOG","message":"✓ Compiled in 812ms"}
+{"timestamp":"00:45:25.034","source":"Server","level":"LOG","message":"✓ Compiled in 743ms"}
+{"timestamp":"00:45:25.732","source":"Browser","level":"LOG","message":"Disconnected from server"}
+{"timestamp":"00:45:25.733","source":"Browser","level":"LOG","message":"Connected to server"}
