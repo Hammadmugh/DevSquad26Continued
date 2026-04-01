@@ -12,6 +12,7 @@ import {
   Clock,
 } from "lucide-react";
 import BrandCarousel from "../components/BrandCarousel";
+import VideoPlayer from "../components/VideoPlayer";
 import movieService from "../services/movieService";
 import { authService } from "../services/authService";
 
@@ -24,8 +25,30 @@ const MovieDetailPage = () => {
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showPlayerOverlay, setShowPlayerOverlay] = useState(false);
+  const [userSubscription, setUserSubscription] = useState(null);
+  const [checkedSubscription, setCheckedSubscription] = useState(false);
 
   console.log("🎬 MovieDetailPage: Mounted with movieId:", movieId);
+
+  // Fetch user subscription on component mount
+  useEffect(() => {
+    const fetchUserSubscription = async () => {
+      if (authService.isAuthenticated()) {
+        try {
+          const profile = await authService.getUserProfile();
+          console.log("👤 User profile fetched:", profile);
+          setUserSubscription(profile);
+        } catch (err) {
+          console.error("❌ Error fetching subscription:", err);
+          setUserSubscription(null);
+        }
+      }
+      setCheckedSubscription(true);
+    };
+
+    fetchUserSubscription();
+  }, []);
 
   useEffect(() => {
     const fetchMovie = async () => {
@@ -121,25 +144,33 @@ const MovieDetailPage = () => {
     // Check if user is authenticated
     if (!authService.isAuthenticated()) {
       // Redirect to login with return URL
-      localStorage.setItem('redirectToSubscription', JSON.stringify({
-        movieId: movie._id,
-        movieTitle: movie.title
-      }));
       navigate('/login');
       return;
     }
 
+    // Check if subscription has been fetched
+    if (!checkedSubscription) {
+      alert("Checking subscription status...");
+      return;
+    }
+
     // Check if user has active subscription
-    const subscription = localStorage.getItem('userSubscription');
-    if (!subscription || JSON.parse(subscription).status !== 'active') {
-      // No subscription, redirect to subscriptions page
+    if (!userSubscription || userSubscription.subscriptionStatus !== 'active') {
+      console.log("❌ User subscription status:", userSubscription?.subscriptionStatus);
       navigate('/subscriptions');
       return;
     }
 
-    // User is authenticated and has subscription
-    // TODO: Navigate to actual video player
-    alert('Video player would start here. (Feature coming soon)');
+    // User is authenticated and has active subscription
+    // Check if movie has a trailer URL to play
+    if (!movie.trailerUrl) {
+      alert("Video not available for this movie/show");
+      return;
+    }
+
+    // Show the video player overlay
+    console.log("▶️ Playing video:", movie.trailerUrl);
+    setShowPlayerOverlay(true);
   };
 
   // Loading state
@@ -457,6 +488,15 @@ const MovieDetailPage = () => {
         </div>
       </div>
       <BrandCarousel images={movieRows.flat()} />
+
+      {/* Video Player Overlay */}
+      {showPlayerOverlay && movie && (
+        <VideoPlayer
+          videoUrl={movie.trailerUrl}
+          title={movie.title}
+          onClose={() => setShowPlayerOverlay(false)}
+        />
+      )}
     </>
   );
 };

@@ -53,20 +53,6 @@ export default function Home() {
           <CommentList socket={socket} comments={comments} isLoading={isLoading} />
         </div>
       </div>
-
-      {/* Info Section */}
-      <div className="mt-8 p-6 bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-lg">
-        <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">
-          💡 How it works
-        </h3>
-        <ul className="text-blue-800 dark:text-blue-200 space-y-1 text-sm">
-          <li>• Type your name and comment in the form</li>
-          <li>• Click "Post Comment" to submit</li>
-          <li>• All connected users will see your comment instantly</li>
-          <li>• Get a notification when others post comments</li>
-          <li>• Comments are stored in memory (refresh to clear)</li>
-        </ul>
-      </div>
     </main>
   );
 }

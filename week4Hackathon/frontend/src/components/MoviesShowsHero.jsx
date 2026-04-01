@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import { Play, ThumbsUp, Volume2 } from 'lucide-react';
@@ -11,10 +11,33 @@ import 'swiper/css/navigation';
 const MoviesShowsHero = ({ images = [] }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [showVideoPlayer, setShowVideoPlayer] = useState(false);
-  const [selectedMovie, setSelectedMovie] = useState(null);
+  const [userSubscription, setUserSubscription] = useState(null);
+  const [checkedSubscription, setCheckedSubscription] = useState(false);
   const prevRef = useRef(null);
   const nextRef = useRef(null);
   const navigate = useNavigate();
+
+  // Fixed Cloudinary trailer URL - used for all movies
+  const TRAILER_URL = "https://res.cloudinary.com/dkct55yjr/video/upload/v1774631437/streamvibe/trailers/wafsvgfwxpnq6shhgmjt.mp4";
+
+  // Fetch user subscription on component mount
+  useEffect(() => {
+    const fetchUserSubscription = async () => {
+      if (authService.isAuthenticated()) {
+        try {
+          const profile = await authService.getUserProfile();
+          console.log("👤 User profile fetched:", profile);
+          setUserSubscription(profile);
+        } catch (err) {
+          console.error("❌ Error fetching subscription:", err);
+          setUserSubscription(null);
+        }
+      }
+      setCheckedSubscription(true);
+    };
+
+    fetchUserSubscription();
+  }, []);
 
   // Use default images if none provided
   const heroImages = images.length > 0 ? images : [
@@ -29,48 +52,45 @@ const MoviesShowsHero = ({ images = [] }) => {
   const movieData = [
     {
       title: "Avengers : Endgame",
-      description: "With the help of remaining allies, the Avengers assemble once more in order to reverse Thanos' actions and restore balance to the universe, no matter what consequences may be in store.",
-      videoUrl: "https://sample-videos.com/video321/mp4/720/big_buck_bunny_720p_1mb.mp4"
+      description: "With the help of remaining allies, the Avengers assemble once more in order to reverse Thanos' actions and restore balance to the universe, no matter what consequences may be in store."
     },
     {
       title: "Movie Title",
-      description: "Movie description goes here",
-      videoUrl: "https://sample-videos.com/video321/mp4/720/big_buck_bunny_720p_1mb.mp4"
+      description: "Movie description goes here"
     },
     {
       title: "Movie Title",
-      description: "Movie description goes here",
-      videoUrl: "https://sample-videos.com/video321/mp4/720/big_buck_bunny_720p_1mb.mp4"
+      description: "Movie description goes here"
     },
     {
       title: "Movie Title",
-      description: "Movie description goes here",
-      videoUrl: "https://sample-videos.com/video321/mp4/720/big_buck_bunny_720p_1mb.mp4"
+      description: "Movie description goes here"
     }
   ];
 
   const handleStartPlaying = () => {
     // Check if user is authenticated
     if (!authService.isAuthenticated()) {
-      // Redirect to login with flag set
-      localStorage.setItem('redirectToSubscription', JSON.stringify({
-        source: 'moviesShowsHero'
-      }));
+      // Redirect to login
       navigate('/login');
       return;
     }
 
+    // Check if subscription has been fetched
+    if (!checkedSubscription) {
+      alert("Checking subscription status...");
+      return;
+    }
+
     // Check if user has active subscription
-    const subscription = localStorage.getItem('userSubscription');
-    if (!subscription || JSON.parse(subscription).status !== 'active') {
-      // No subscription, redirect to subscriptions page
+    if (!userSubscription || userSubscription.subscriptionStatus !== 'active') {
+      console.log("❌ User subscription status:", userSubscription?.subscriptionStatus);
       navigate('/subscriptions');
       return;
     }
 
-    // User is authenticated and has subscription
-    const currentMovie = movieData[currentSlide];
-    setSelectedMovie(currentMovie);
+    // User is authenticated and has active subscription - show video player
+    console.log("▶️ Playing trailer from hero section");
     setShowVideoPlayer(true);
   };
 
@@ -188,10 +208,10 @@ const MoviesShowsHero = ({ images = [] }) => {
       </div>
 
       {/* Video Player Modal */}
-      {showVideoPlayer && selectedMovie && (
+      {showVideoPlayer && (
         <VideoPlayer
-          videoUrl={selectedMovie.videoUrl}
-          title={selectedMovie.title}
+          videoUrl={TRAILER_URL}
+          title={movieData[currentSlide]?.title || "Movie Title"}
           onClose={() => setShowVideoPlayer(false)}
         />
       )}
