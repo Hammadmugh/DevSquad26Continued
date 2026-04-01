@@ -70,11 +70,8 @@ export class FollowersService {
       message: `${followerUser?.username} started following ${followedUser?.username}`,
     });
 
-    // Emit real-time notification to the recipient
-    this.chatGateway.sendNotificationToUser(
-      userId,
-      notification,
-    );
+    // Broadcast notification to all users
+    this.chatGateway.broadcastNotification(notification);
 
     return { message: 'Following' };
   }

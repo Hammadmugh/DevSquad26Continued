@@ -125,11 +125,8 @@ export class CommentService {
       commentId: comment._id,
     });
 
-    // Emit real-time notification to the recipient
-    this.chatGateway.sendNotificationToUser(
-      authorId.toString(),
-      notification,
-    );
+    // Broadcast notification to all users
+    this.chatGateway.broadcastNotification(notification);
 
     return this.commentModel
       .findById(comment._id)
@@ -187,11 +184,8 @@ export class CommentService {
       commentId: comment._id,
     });
 
-    // Emit real-time notification to the recipient
-    this.chatGateway.sendNotificationToUser(
-      authorId.toString(),
-      notification,
-    );
+    // Broadcast notification to all users
+    this.chatGateway.broadcastNotification(notification);
 
     return this.commentModel
       .findById(comment._id)
