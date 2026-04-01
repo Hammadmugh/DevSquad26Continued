@@ -6,8 +6,15 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Enable CORS for frontend
+  const allowedOrigins = [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'https://week5day2-frontend.vercel.app',
+    process.env.FRONTEND_URL || 'http://localhost:3001',
+  ];
+
   app.enableCors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3001',
+    origin: allowedOrigins,
     credentials: true,
   });
 
