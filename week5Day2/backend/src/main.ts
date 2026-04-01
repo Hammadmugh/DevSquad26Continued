@@ -14,7 +14,8 @@ async function bootstrap() {
   // Enable global validation pipe
   app.useGlobalPipes(new ValidationPipe());
 
-  await app.listen(process.env.PORT ?? 3000);
-  console.log(`Server running on port ${process.env.PORT ?? 3000}`);
+  const PORT = parseInt(process.env.PORT || '3000', 10);
+  await app.listen(PORT, '0.0.0.0');
+  console.log(`Server running on port ${PORT}`);
 }
 bootstrap();
