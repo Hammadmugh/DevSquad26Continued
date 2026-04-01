@@ -16,6 +16,7 @@ import { JwtService } from '@nestjs/jwt';
     origin: [
       'http://localhost:3000',
       'http://localhost:3001',
+      'https://week5day2-frontend.vercel.app',
       process.env.FRONTEND_URL || 'http://localhost:3001',
     ],
     credentials: true,
