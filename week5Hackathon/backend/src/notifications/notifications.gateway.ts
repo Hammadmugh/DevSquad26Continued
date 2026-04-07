@@ -8,7 +8,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { NotificationsService } from './notifications.service';
 
-@WebSocketGateway({ cors: { origin: 'http://localhost:3000', credentials: true } })
+@WebSocketGateway({ cors: { origin: process.env.FRONTEND_URL ?? 'http://localhost:3000', credentials: true } })
 export class NotificationsGateway {
   @WebSocketServer()
   server!: Server;
