@@ -18,7 +18,18 @@ type ApiProduct = {
   images: string[];
 };
 
-const FALLBACK = [
+type ProductItem = {
+  id: string;
+  name: string;
+  price: number;
+  originalPrice?: number;
+  discount?: number;
+  rating: number;
+  image: string;
+  href: string;
+};
+
+const FALLBACK: ProductItem[] = [
   { id: "1", name: "T-shirt with Tape Details", price: 120, rating: 4.5, image: "/new-arrival-1.png", href: "/products/1" },
   { id: "2", name: "Skinny Fit Jeans", price: 240, originalPrice: 260, discount: 20, rating: 3.5, image: "/new-arrival-2.png", href: "/products/2" },
   { id: "3", name: "Checkered Shirt", price: 180, rating: 4.5, image: "/new-arrival-3.png", href: "/products/3" },
@@ -26,7 +37,7 @@ const FALLBACK = [
 ];
 
 export default function NewArrivals() {
-  const [items, setItems] = useState(FALLBACK);
+  const [items, setItems] = useState<ProductItem[]>(FALLBACK);
 
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"}/api/products`)

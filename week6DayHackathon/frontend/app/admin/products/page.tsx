@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import AdminProductCard, { AdminProduct } from "@/components/admin/AdminProductCard";
 import AdminFooter from "@/components/admin/AdminFooter";
@@ -62,7 +62,7 @@ function ConfirmDeleteModal({ onConfirm, onCancel }: { onConfirm: () => void; on
 }
 
 /* ── Main Page ── */
-export default function AdminProductsPage() {
+function AdminProductsPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const categoryFilter = searchParams.get("category") ?? "";
@@ -214,5 +214,13 @@ export default function AdminProductsPage() {
       {/* ── Footer ── */}
       <AdminFooter />
     </div>
+  );
+}
+
+export default function AdminProductsPage() {
+  return (
+    <Suspense>
+      <AdminProductsPageInner />
+    </Suspense>
   );
 }
