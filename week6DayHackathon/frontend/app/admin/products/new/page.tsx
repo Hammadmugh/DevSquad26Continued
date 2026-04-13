@@ -69,7 +69,7 @@ export default function AddProductPage() {
     setError("");
     try {
       const token = localStorage.getItem("shopco_token");
-      const res = await fetch("http://localhost:3001/api/products", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"}/api/products`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

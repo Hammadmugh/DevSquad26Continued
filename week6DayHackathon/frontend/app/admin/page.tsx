@@ -465,7 +465,7 @@ export default function AdminDashboardPage() {
     if (!token) return;
 
     // Fetch orders
-    fetch("http://localhost:3001/api/orders/all", {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"}/api/orders/all`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((r) => r.json())
@@ -501,7 +501,7 @@ export default function AdminDashboardPage() {
       .catch(() => {});
 
     // Fetch products for best sellers
-    fetch("http://localhost:3001/api/products")
+    fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"}/api/products`)
       .then((r) => r.json())
       .then((products: { name: string; price: number; reviewCount?: number; images?: string[] }[]) => {
         if (!Array.isArray(products)) return;

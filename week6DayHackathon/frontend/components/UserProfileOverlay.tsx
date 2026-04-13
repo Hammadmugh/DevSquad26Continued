@@ -40,7 +40,7 @@ export default function UserProfileOverlay() {
     if (!isProfileOpen || !token) return;
     setOrdersLoading(true);
     setOrdersError("");
-    fetch("http://localhost:3001/api/orders", {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"}/api/orders`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((r) => {

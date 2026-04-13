@@ -77,7 +77,7 @@ export default function AdminProductsPage() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("http://localhost:3001/api/products");
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"}/api/products`);
       if (!res.ok) throw new Error("Failed to fetch products");
       const data = await res.json();
       setAllProducts(Array.isArray(data) ? data : []);
@@ -109,7 +109,7 @@ export default function AdminProductsPage() {
   const confirmDelete = async () => {
     if (!deleteId) return;
     const token = localStorage.getItem("shopco_token");
-    await fetch(`http://localhost:3001/api/products/${deleteId}`, {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"}/api/products/${deleteId}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });

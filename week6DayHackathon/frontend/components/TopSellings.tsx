@@ -30,7 +30,7 @@ export default function TopSellings() {
   const [items, setItems] = useState(FALLBACK);
 
   useEffect(() => {
-    fetch("http://localhost:3001/api/products")
+    fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"}/api/products`)
       .then((r) => r.json())
       .then((data: ApiProduct[]) => {
         if (!Array.isArray(data) || data.length === 0) return;

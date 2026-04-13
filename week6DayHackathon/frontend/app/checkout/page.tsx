@@ -104,7 +104,7 @@ export default function CheckoutPage() {
       const token = localStorage.getItem("shopco_token");
 
       // Place order with items + shipping address
-      const res = await fetch("http://localhost:3001/api/orders", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"}/api/orders`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

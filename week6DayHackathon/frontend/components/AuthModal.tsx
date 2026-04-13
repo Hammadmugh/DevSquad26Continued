@@ -215,7 +215,7 @@ export default function AuthModal() {
               {/* Google */}
               <button
                 type="button"
-                onClick={() => { window.location.href = "http://localhost:3001/api/auth/google"; }}
+                onClick={() => { window.location.href = `${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"}/api/auth/google`; }}
                 className="w-full flex items-center justify-center gap-3 border border-black/15 rounded-full py-3 text-sm font-medium text-black hover:bg-black/5 transition-colors"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24">
@@ -230,7 +230,7 @@ export default function AuthModal() {
               {/* GitHub */}
               <button
                 type="button"
-                onClick={() => { window.location.href = "http://localhost:3001/api/auth/github"; }}
+                onClick={() => { window.location.href = `${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"}/api/auth/github`; }}
                 className="w-full flex items-center justify-center gap-3 border border-black/15 rounded-full py-3 text-sm font-medium text-black hover:bg-black/5 transition-colors"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -242,7 +242,7 @@ export default function AuthModal() {
               {/* Discord */}
               <button
                 type="button"
-                onClick={() => { window.location.href = "http://localhost:3001/api/auth/discord"; }}
+                onClick={() => { window.location.href = `${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"}/api/auth/discord`; }}
                 className="w-full flex items-center justify-center gap-3 border border-black/15 rounded-full py-3 text-sm font-medium text-black hover:bg-black/5 transition-colors"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="#5865F2">

@@ -9,7 +9,7 @@ import {
   ReactNode,
 } from "react";
 
-const API = "http://localhost:3001/api";
+const API = `${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"}/api`;
 
 export type NotificationCategory = "review" | "purchase" | "sale" | "general";
 
@@ -66,7 +66,7 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
     async function connect() {
       try {
         const { io } = await import("socket.io-client");
-        const socket = io("http://localhost:3001", { transports: ["websocket"], reconnectionAttempts: 3 });
+        const socket = io(process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001", { transports: ["websocket"], reconnectionAttempts: 3 });
 
         const addFromSocket = (data: any) => {
           setNotifications((prev) => {

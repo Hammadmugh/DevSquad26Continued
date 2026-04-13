@@ -249,7 +249,7 @@ export default function CategoryPage({ params }: { params: Promise<{ style: stri
       images: p.images,
     }));
 
-    fetch("http://localhost:3001/api/products")
+    fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"}/api/products`)
       .then((r) => r.json())
       .then((data: { _id: string; name: string; price: number; salePrice?: number | null; onSale?: boolean; rating: number; images: string[]; category?: string }[]) => {
         if (!Array.isArray(data)) { setCatalog(staticItems); return; }

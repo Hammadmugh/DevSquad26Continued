@@ -54,7 +54,7 @@ export default function WriteReviewModal({ productId, onSuccess, onClose }: Prop
     setSubmitting(true);
     setError("");
     try {
-      const res = await fetch(`http://localhost:3001/api/products/${productId}/reviews`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"}/api/products/${productId}/reviews`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

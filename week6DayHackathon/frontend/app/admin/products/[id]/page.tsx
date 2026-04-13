@@ -111,7 +111,7 @@ export default function ProductDetailPage() {
     if (!id) return;
     const load = async () => {
       try {
-        const res = await fetch(`http://localhost:3001/api/products/${id}`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"}/api/products/${id}`);
         if (!res.ok) throw new Error("Not found");
         const p = await res.json();
         setForm({
@@ -142,7 +142,7 @@ export default function ProductDetailPage() {
     setSaveSuccess(false);
     try {
       const token = localStorage.getItem("shopco_token");
-      const res = await fetch(`http://localhost:3001/api/products/${id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"}/api/products/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -174,7 +174,7 @@ export default function ProductDetailPage() {
   /* ── Delete ── */
   const handleDelete = async () => {
     const token = localStorage.getItem("shopco_token");
-    await fetch(`http://localhost:3001/api/products/${id}`, {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"}/api/products/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });
