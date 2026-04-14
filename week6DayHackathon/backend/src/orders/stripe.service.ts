@@ -128,6 +128,111 @@ export class StripeService {
   }
 
   /**
+   * Creates a PaymentIntent for embedded Stripe Elements checkout.
+   * Returns { clientSecret, orderId }.
+   */
+  async createPaymentIntent(
+    userId: string,
+    items: OrderItemDto[],
+    shippingAddress: ShippingAddressDto | undefined,
+    discount: number,
+    pointsRedeemed: number,
+  ): Promise<{ clientSecret: string; orderId: string }> {
+    if (!items.length) throw new BadRequestException('No items provided');
+
+    const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+    const DELIVERY_FEE = 15;
+    const totalMoney = Math.max(0, subtotal - discount + DELIVERY_FEE);
+    const amountCents = Math.round(totalMoney * 100);
+
+    if (amountCents < 50) throw new BadRequestException('Amount too small for card payment');
+
+    // Create pending order first
+    const order = await this.orderModel.create({
+      userId: new Types.ObjectId(userId),
+      items: items.map((i) => ({
+        productId: (i.productId && /^[a-f\d]{24}$/i.test(i.productId))
+          ? new Types.ObjectId(i.productId)
+          : new Types.ObjectId(),
+        name: i.name,
+        image: i.image ?? '',
+        price: i.price,
+        pointsPrice: 0,
+        size: i.size ?? '',
+        color: i.color ?? '',
+        quantity: i.quantity,
+      })),
+      ...(shippingAddress ? { shippingAddress } : {}),
+      totalMoney,
+      totalPointsSpent: pointsRedeemed,
+      discount,
+      status: OrderStatus.Pending,
+      paymentMethod: PaymentMethod.Stripe,
+      paymentStatus: PaymentStatus.Pending,
+    });
+
+    const orderId = (order._id as any).toString();
+
+    const paymentIntent = await this.stripe.paymentIntents.create({
+      amount: amountCents,
+      currency: 'usd',
+      automatic_payment_methods: { enabled: true },
+      metadata: { orderId, userId, pointsRedeemed: String(pointsRedeemed) },
+    });
+
+    await this.orderModel.findByIdAndUpdate(orderId, {
+      stripePaymentIntentId: paymentIntent.id,
+    });
+
+    return { clientSecret: paymentIntent.client_secret!, orderId };
+  }
+
+  /**
+   * Fulfil order by PaymentIntent ID (called from webhook payment_intent.succeeded).
+   */
+  async fulfillOrderByPaymentIntent(paymentIntentId: string): Promise<void> {
+    const pi = await this.stripe.paymentIntents.retrieve(paymentIntentId);
+    if (pi.status !== 'succeeded') return;
+
+    const { orderId, userId, pointsRedeemed } = pi.metadata ?? {};
+    if (!orderId) return;
+
+    const order = await this.orderModel.findById(orderId);
+    if (!order || order.paymentStatus === PaymentStatus.Paid) return;
+
+    const pts = parseInt(pointsRedeemed ?? '0', 10);
+    if (pts > 0 && userId) {
+      try { await this.usersService.deductPoints(userId, pts); } catch { /**/ }
+    }
+
+    for (const item of order.items) {
+      if (item.productId) {
+        try { await this.productsService.decrementStock(item.productId.toString(), item.quantity); } catch { /**/ }
+      }
+    }
+
+    const pointsEarned = Math.floor(order.totalMoney);
+    if (pointsEarned > 0 && userId) {
+      await this.usersService.addPoints(userId, pointsEarned);
+    }
+
+    await this.orderModel.findByIdAndUpdate(orderId, {
+      status: OrderStatus.Paid,
+      paymentStatus: PaymentStatus.Paid,
+      stripePaymentIntentId: paymentIntentId,
+      pointsEarned,
+    });
+
+    await this.notificationsGateway.saveAndBroadcast(
+      'purchase_made',
+      'purchase',
+      'New Purchase',
+      `Order #${orderId.slice(-6).toUpperCase()} paid ($${order.totalMoney.toFixed(2)})`,
+      { orderId, totalMoney: order.totalMoney },
+    );
+  }
+
+  /**
    * Called by the webhook when payment_intent.succeeded fires.
    * Fulfils the order: marks paid, deducts points, adds earned points, decrements stock.
    */

@@ -33,6 +33,19 @@ export class OrdersController {
     );
   }
 
+  /** POST /api/orders/stripe/payment-intent — creates PaymentIntent for embedded Elements */
+  @UseGuards(JwtAuthGuard)
+  @Post('stripe/payment-intent')
+  createPaymentIntent(@CurrentUser() user: any, @Body() dto: CreateStripeSessionDto) {
+    return this.stripeService.createPaymentIntent(
+      user.sub,
+      dto.items,
+      dto.shippingAddress,
+      dto.discount ?? 0,
+      dto.pointsRedeemed ?? 0,
+    );
+  }
+
   /** GET /api/orders/stripe/session/:sessionId — confirm payment status after redirect */
   @UseGuards(JwtAuthGuard)
   @Get('stripe/session/:sessionId')
@@ -65,6 +78,11 @@ export class OrdersController {
     if (event.type === 'checkout.session.expired') {
       const session = event.data.object as Stripe.Checkout.Session;
       await this.stripeService.cancelOrder(session.id);
+    }
+
+    if (event.type === 'payment_intent.succeeded') {
+      const pi = event.data.object as Stripe.PaymentIntent;
+      await this.stripeService.fulfillOrderByPaymentIntent(pi.id);
     }
 
     return { received: true };
