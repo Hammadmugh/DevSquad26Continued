@@ -32,6 +32,11 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased scroll-smooth`}
     >
+      <head>
+        <link rel="preconnect" href="https://fonts.cdnfonts.com" />
+        <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/satoshi" />
+        <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/integral-cf" />
+      </head>
       <body className="min-h-full flex flex-col">
         <AuthProvider>
           <CartProvider>

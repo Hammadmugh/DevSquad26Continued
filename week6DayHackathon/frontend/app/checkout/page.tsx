@@ -128,32 +128,38 @@ function CheckoutInner() {
     setError("");
     try {
       const token = localStorage.getItem("shopco_token");
+      const payload = {
+        items: items.map((item) => ({
+          name: item.name, image: item.image || undefined, price: Number(item.price),
+          size: item.size || undefined, color: item.color || undefined,
+          quantity: Number(item.quantity),
+          productId: String(item.id),
+        })),
+        discount: Number(totalDiscount.toFixed(2)),
+        pointsRedeemed: Number(pointsToRedeem),
+        shippingAddress: {
+          fullName: address.fullName, phone: address.phone,
+          addressLine1: address.addressLine1,
+          ...(address.addressLine2 ? { addressLine2: address.addressLine2 } : {}),
+          city: address.city, state: address.state,
+          postalCode: address.postalCode, country: address.country,
+        },
+      };
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"}/api/orders/stripe/checkout`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({
-          items: items.map((item) => ({
-            name: item.name, image: item.image, price: item.price,
-            size: item.size, color: item.color, quantity: item.quantity,
-            productId: String(item.id),
-          })),
-          discount: totalDiscount,
-          pointsRedeemed: pointsToRedeem,
-          shippingAddress: {
-            fullName: address.fullName, phone: address.phone,
-            addressLine1: address.addressLine1,
-            addressLine2: address.addressLine2 || undefined,
-            city: address.city, state: address.state,
-            postalCode: address.postalCode, country: address.country,
-          },
-        }),
+        body: JSON.stringify(payload),
       });
-      if (!res.ok) throw new Error("Could not create payment session");
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        const msg = Array.isArray(errData.message) ? errData.message.join("; ") : (errData.message ?? "Could not create payment session");
+        throw new Error(msg);
+      }
       const { url } = await res.json();
       if (isNewUser) markFirstOrderUsed();
       window.location.href = url;
-    } catch {
-      setError("Could not start payment. Please try again.");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Could not start payment. Please try again.");
       setPaying(false);
     }
   };
