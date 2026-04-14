@@ -84,8 +84,8 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
   useEffect(() => {
     if (!isObjectId) return;
-    fetch(`http://localhost:3001/api/products/${id}`)
-      .then((r) => { if (!r.ok) throw new Error("not found"); return r.json(); })
+    fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"}/api/products/${id}`)
+      .then((res) => res.json())
       .then((data: BackendProduct) => setProduct(backendToProduct(data)))
       .catch(() => setProduct(null))
       .finally(() => setLoading(false));
@@ -108,7 +108,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   useEffect(() => {
     if (!isObjectId) return;
     setReviewsLoading(true);
-    fetch(`http://localhost:3001/api/products/${id}/reviews`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"}/api/products/${id}/reviews`)
       .then((r) => r.json())
       .then((data) => setBackendReviews(Array.isArray(data) ? data : []))
       .catch(() => {})
@@ -411,7 +411,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             // Refresh reviews for backend products
             if (isObjectId) {
               setReviewsLoading(true);
-              fetch(`http://localhost:3001/api/products/${id}/reviews`)
+              fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"}/api/products/${id}/reviews`)
                 .then((r) => r.json())
                 .then((data) => setBackendReviews(Array.isArray(data) ? data : []))
                 .catch(() => {})

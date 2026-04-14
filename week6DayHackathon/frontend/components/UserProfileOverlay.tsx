@@ -15,12 +15,27 @@ interface OrderItem {
 interface Order {
   _id: string;
   status: string;
+  paymentMethod?: string;
+  paymentStatus?: string;
   totalMoney: number;
   totalPointsSpent: number;
   pointsEarned: number;
   items: OrderItem[];
   createdAt: string;
 }
+
+const PAYMENT_METHOD_LABELS: Record<string, string> = {
+  stripe: "Card",
+  points: "Points",
+  free: "Free",
+};
+
+const PAYMENT_STATUS_COLORS: Record<string, string> = {
+  paid: "bg-green-100 text-green-700",
+  pending: "bg-yellow-100 text-yellow-700",
+  failed: "bg-red-100 text-red-700",
+  cancelled: "bg-red-100 text-red-700",
+};
 
 const STATUS_COLORS: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-700",
@@ -196,6 +211,31 @@ export default function UserProfileOverlay() {
                             </span>
                           )}
                         </div>
+
+                        {/* Payment info */}
+                        {(order.paymentMethod || order.paymentStatus) && (
+                          <div className="flex items-center gap-2 flex-wrap">
+                            {order.paymentMethod && (
+                              <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-black/5 text-black/60 capitalize">
+                                {PAYMENT_METHOD_LABELS[order.paymentMethod] ?? order.paymentMethod}
+                              </span>
+                            )}
+                            {order.paymentStatus && (
+                              <span
+                                className={`text-[11px] font-semibold px-2 py-0.5 rounded-full capitalize ${
+                                  PAYMENT_STATUS_COLORS[order.paymentStatus] ?? "bg-gray-100 text-gray-600"
+                                }`}
+                              >
+                                {order.paymentStatus}
+                              </span>
+                            )}
+                            {order.pointsEarned > 0 && (
+                              <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-amber-50 text-amber-700">
+                                +{order.pointsEarned} pts
+                              </span>
+                            )}
+                          </div>
+                        )}
 
                         {/* Order total */}
                         <div className="flex items-center justify-between pt-2 border-t border-black/10">

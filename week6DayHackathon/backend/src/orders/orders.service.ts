@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { Order, OrderDocument, OrderStatus } from './schemas/order.schema';
+import { Order, OrderDocument, OrderStatus, PaymentMethod, PaymentStatus } from './schemas/order.schema';
 import { CartService } from '../cart/cart.service';
 import { UsersService } from '../users/users.service';
 import { ProductsService } from '../products/products.service';
@@ -78,13 +78,32 @@ export class OrdersService {
     return order;
   }
 
-  /** Place an order directly from a client-supplied items array (no backend cart needed) */
-  async placeOrderDirect(userId: string, items: OrderItemDto[], shippingAddress?: ShippingAddressDto, discount = 0): Promise<OrderDocument> {
+  /** Place an order directly from a client-supplied items array (no backend cart needed).
+   *  Used for points-only or fully-discounted (free) orders — NOT for Stripe payments.
+   */
+  async placeOrderDirect(
+    userId: string,
+    items: OrderItemDto[],
+    shippingAddress?: ShippingAddressDto,
+    discount = 0,
+    pointsRedeemed = 0,
+  ): Promise<OrderDocument> {
     if (!items || items.length === 0) throw new BadRequestException('No items provided');
 
-    const totalMoney = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
-    const pointsEarned = Math.floor(totalMoney);
+    const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+    const DELIVERY_FEE = 15;
+    const totalMoney = Math.max(0, subtotal - discount + DELIVERY_FEE);
 
+    // Determine payment method
+    const paymentMethod = totalMoney === 0 ? PaymentMethod.Points : PaymentMethod.Free;
+
+    // Deduct redeemed points
+    if (pointsRedeemed > 0) {
+      await this.usersService.deductPoints(userId, pointsRedeemed);
+    }
+
+    // Award loyalty points (1 per $1 spent with money)
+    const pointsEarned = Math.floor(totalMoney);
     if (pointsEarned > 0) {
       await this.usersService.addPoints(userId, pointsEarned);
     }
@@ -117,12 +136,15 @@ export class OrdersService {
       })),
       ...(shippingAddress ? { shippingAddress } : {}),
       totalMoney,
-      totalPointsSpent: 0,
+      totalPointsSpent: pointsRedeemed,
       pointsEarned,
       discount,
+      status: OrderStatus.Paid,
+      paymentMethod,
+      paymentStatus: PaymentStatus.Paid,
     });
 
-    // Broadcast purchase notification and persist to DB
+    // Broadcast purchase notification
     await this.notificationsGateway.saveAndBroadcast(
       'purchase_made',
       'purchase',

@@ -42,6 +42,19 @@ export enum OrderStatus {
   Cancelled = 'cancelled',
 }
 
+export enum PaymentMethod {
+  Stripe = 'stripe',
+  Points = 'points',
+  Free = 'free',
+}
+
+export enum PaymentStatus {
+  Pending = 'pending',
+  Paid = 'paid',
+  Failed = 'failed',
+  Cancelled = 'cancelled',
+}
+
 @Schema({ timestamps: true })
 export class Order {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true }) userId: Types.ObjectId;
@@ -56,5 +69,14 @@ export class Order {
 
   @Prop({ type: String, enum: OrderStatus, default: OrderStatus.Pending })
   status: OrderStatus;
+
+  @Prop({ type: String, enum: PaymentMethod, default: PaymentMethod.Stripe })
+  paymentMethod: PaymentMethod;
+
+  @Prop({ type: String, enum: PaymentStatus, default: PaymentStatus.Pending })
+  paymentStatus: PaymentStatus;
+
+  @Prop() stripeSessionId: string;
+  @Prop() stripePaymentIntentId: string;
 }
 export const OrderSchema = SchemaFactory.createForClass(Order);

@@ -19,6 +19,8 @@ type Order = {
   items: OrderItem[];
   totalMoney: number;
   status: string;
+  paymentMethod?: string;
+  paymentStatus?: string;
   createdAt: string;
 };
 
@@ -63,7 +65,7 @@ export default function AdminOrdersPage() {
   async function fetchOrders() {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:3001/api/orders/all", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"}/api/orders/all`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error("Failed to fetch orders");
@@ -78,7 +80,7 @@ export default function AdminOrdersPage() {
   async function handleStatusChange(orderId: string, newStatus: string) {
     setUpdatingId(orderId);
     try {
-      const res = await fetch(`http://localhost:3001/api/orders/${orderId}/status`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"}/api/orders/${orderId}/status`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -365,17 +367,24 @@ export default function AdminOrdersPage() {
                   </div>
 
                   {/* Status */}
-                  <div className="w-[84px] flex items-center justify-center gap-1.5 px-2 py-2">
-                    <span
-                      className="w-2 h-2 rounded-full shrink-0"
-                      style={{ background: sc.dot }}
-                    />
-                    <span
-                      className="font-semibold text-sm"
-                      style={{ fontFamily: "'Open Sans'", color: "#000" }}
-                    >
-                      {sc.label}
-                    </span>
+                  <div className="w-[84px] flex flex-col items-center gap-1 px-2 py-2">
+                    <div className="flex items-center gap-1.5">
+                      <span
+                        className="w-2 h-2 rounded-full shrink-0"
+                        style={{ background: sc.dot }}
+                      />
+                      <span
+                        className="font-semibold text-sm"
+                        style={{ fontFamily: "'Open Sans'", color: "#000" }}
+                      >
+                        {sc.label}
+                      </span>
+                    </div>
+                    {order.paymentMethod && (
+                      <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-black/5 text-black/50 capitalize">
+                        {order.paymentMethod === "stripe" ? "Card" : order.paymentMethod === "points" ? "Points" : "Free"}
+                      </span>
+                    )}
                   </div>
 
                   {/* Amount */}

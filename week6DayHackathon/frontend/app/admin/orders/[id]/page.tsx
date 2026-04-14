@@ -37,6 +37,9 @@ type Order = {
   totalMoney: number;
   discount?: number;
   status: string;
+  paymentMethod?: string;
+  paymentStatus?: string;
+  stripePaymentIntentId?: string;
   createdAt: string;
   shippingAddress?: ShippingAddress;
 };
@@ -97,7 +100,7 @@ export default function AdminOrderDetailPage() {
     setStatusOpen(false);
     setUpdating(true);
     try {
-      const res = await fetch(`http://localhost:3001/api/orders/${id}/status`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"}/api/orders/${id}/status`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -374,7 +377,7 @@ export default function AdminOrderDetailPage() {
                     className="text-base font-semibold"
                     style={{ fontFamily: "'Open Sans'", color: "#70706E" }}
                   >
-                    Payment Method: Card
+                    Payment Method: {order.paymentMethod === "stripe" ? "Card" : order.paymentMethod === "points" ? "Loyalty Points" : order.paymentMethod === "free" ? "Free" : "Card"}
                   </span>
                   <span
                     className="text-base font-semibold"
@@ -490,6 +493,20 @@ export default function AdminOrderDetailPage() {
                   Card **** **** ****
                 </span>
               </div>
+              <span
+                className="text-base font-semibold"
+                style={{ fontFamily: "'Open Sans'", color: "#70706E" }}
+              >
+                Payment Status: {order.paymentStatus ? order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1) : "N/A"}
+              </span>
+              {order.stripePaymentIntentId && (
+                <span
+                  className="text-xs font-mono break-all"
+                  style={{ color: "#70706E" }}
+                >
+                  PI: {order.stripePaymentIntentId}
+                </span>
+              )}
               <span
                 className="text-base font-semibold"
                 style={{ fontFamily: "'Open Sans'", color: "#70706E" }}
