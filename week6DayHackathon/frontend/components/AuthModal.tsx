@@ -178,6 +178,14 @@ export default function AuthModal() {
                 ? "Sign In"
                 : "Create Account"}
             </button>
+
+            {tab === "login" && (
+              <div className="flex flex-col gap-1 bg-[#F8F8F8] border border-black/8 rounded-[12px] px-4 py-3">
+                <p className="text-xs font-semibold text-black/50 uppercase tracking-wide">Admin Demo</p>
+                <p className="text-xs text-black/50 font-mono">hammad@gmail.com</p>
+                <p className="text-xs text-black/50 font-mono">Hammad@123</p>
+              </div>
+            )}
           </form>
 
           <p className="text-center text-sm text-black/50 mt-6">
