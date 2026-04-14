@@ -1,4 +1,6 @@
-import { Controller, Get, Post, Patch, Param, Body, UseGuards, Req, Headers, RawBodyRequest, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Param, Body, UseGuards, Req, Headers, HttpCode } from '@nestjs/common';
+import type { RawBodyRequest } from '@nestjs/common';
+import Stripe from 'stripe';
 import { Request } from 'express';
 import { OrdersService } from './orders.service';
 import { StripeService } from './stripe.service';
@@ -48,7 +50,7 @@ export class OrdersController {
     const payload = req.rawBody;
     if (!payload || !signature) return { received: false };
 
-    let event: import('stripe').Stripe.Event;
+    let event: Stripe.Event;
     try {
       event = this.stripeService.constructEvent(payload, signature);
     } catch {
@@ -56,12 +58,12 @@ export class OrdersController {
     }
 
     if (event.type === 'checkout.session.completed') {
-      const session = event.data.object as import('stripe').Stripe.Checkout.Session;
+      const session = event.data.object as Stripe.Checkout.Session;
       await this.stripeService.fulfillOrder(session.id);
     }
 
     if (event.type === 'checkout.session.expired') {
-      const session = event.data.object as import('stripe').Stripe.Checkout.Session;
+      const session = event.data.object as Stripe.Checkout.Session;
       await this.stripeService.cancelOrder(session.id);
     }
 
