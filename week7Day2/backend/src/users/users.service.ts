@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { NewsletterService } from '../newsletter/newsletter.service';
 
 export interface User {
   id: string;
@@ -12,6 +13,8 @@ export interface User {
 @Injectable()
 export class UsersService {
   private users: User[] = [];
+
+  constructor(private readonly newsletterService: NewsletterService) {}
 
   async findOrCreate(profile: {
     googleId: string;
@@ -27,6 +30,8 @@ export class UsersService {
         createdAt: new Date(),
       };
       this.users.push(user);
+      // Send welcome email to new users (fire-and-forget)
+      this.newsletterService.sendWelcomeEmail(user.email, user.name).catch(() => {});
     }
     return user;
   }

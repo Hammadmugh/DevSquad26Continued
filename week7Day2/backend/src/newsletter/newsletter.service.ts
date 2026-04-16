@@ -72,6 +72,125 @@ export class NewsletterService {
     return { message: 'Successfully subscribed to the newsletter!' };
   }
 
+  async sendWelcomeEmail(email: string, name: string): Promise<void> {
+    const apiKey = this.configService.get<string>('BREVO_API_KEY');
+    if (!apiKey) {
+      this.logger.warn('BREVO_API_KEY not set. Skipping welcome email.');
+      return;
+    }
+
+    const defaultClient = SibApiV3Sdk.ApiClient.instance;
+    const apiKeyAuth = defaultClient.authentications['api-key'];
+    apiKeyAuth.apiKey = apiKey;
+
+    const transactionalEmailsApi = new SibApiV3Sdk.TransactionalEmailsApi();
+    try {
+      await transactionalEmailsApi.sendTransacEmail({
+        to: [{ email, name }],
+        sender: {
+          email:
+            this.configService.get<string>('SENDER_EMAIL') ||
+            'noreply@circlechain.io',
+          name: 'Circlechain',
+        },
+        subject: '🎉 Welcome to Circlechain!',
+        htmlContent: this.buildWelcomeEmail(name),
+      });
+    } catch (err: any) {
+      this.logger.error('Welcome email send error', err?.response?.body);
+    }
+  }
+
+  private buildWelcomeEmail(name: string): string {
+    const frontendUrl =
+      this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
+    return `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to Circlechain</title>
+</head>
+<body style="margin:0;padding:0;background-color:#010010;font-family:'Montserrat',Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#010010;">
+    <tr>
+      <td align="center" style="padding:40px 20px;">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color:#010010;border:1px solid rgba(115,253,170,0.3);border-radius:16px;overflow:hidden;">
+          <!-- Header -->
+          <tr>
+            <td style="background:linear-gradient(135deg,#010010 0%,rgba(115,253,170,0.1) 100%);padding:40px 40px 30px;text-align:center;border-bottom:1px solid rgba(115,253,170,0.2);">
+              <span style="color:#fff;font-size:28px;font-weight:700;letter-spacing:1px;">Circlechain</span>
+            </td>
+          </tr>
+          <!-- Hero -->
+          <tr>
+            <td style="padding:50px 40px 30px;text-align:center;">
+              <div style="font-size:56px;margin-bottom:20px;">🎉</div>
+              <h1 style="color:#fff;font-size:28px;font-weight:700;margin:0 0 16px;line-height:1.3;">
+                Welcome aboard, ${name}!
+              </h1>
+              <p style="color:#73FDAA;font-size:16px;margin:0 0 20px;">
+                Your account has been created successfully.
+              </p>
+              <p style="color:rgba(255,255,255,0.8);font-size:15px;margin:0 0 30px;line-height:1.6;">
+                You're now part of the Circlechain community — a decentralized platform built for the future of blockchain asset trading.
+              </p>
+            </td>
+          </tr>
+          <!-- Features -->
+          <tr>
+            <td style="padding:0 40px 40px;">
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td style="padding:16px;background:rgba(115,253,170,0.08);border:1px solid rgba(115,253,170,0.2);border-radius:12px;">
+                    <p style="color:#73FDAA;font-size:14px;font-weight:700;margin:0 0 4px;">💼 Access Token Markets</p>
+                    <p style="color:rgba(255,255,255,0.7);font-size:13px;margin:0;">Buy, sell and manage your blockchain assets in one place.</p>
+                  </td>
+                </tr>
+                <tr><td style="height:12px;"></td></tr>
+                <tr>
+                  <td style="padding:16px;background:rgba(115,253,170,0.08);border:1px solid rgba(115,253,170,0.2);border-radius:12px;">
+                    <p style="color:#73FDAA;font-size:14px;font-weight:700;margin:0 0 4px;">📊 Real-Time Market Trends</p>
+                    <p style="color:rgba(255,255,255,0.7);font-size:13px;margin:0;">Track BTC, ETH, BNB, USDT and more in real time.</p>
+                  </td>
+                </tr>
+                <tr><td style="height:12px;"></td></tr>
+                <tr>
+                  <td style="padding:16px;background:rgba(115,253,170,0.08);border:1px solid rgba(115,253,170,0.2);border-radius:12px;">
+                    <p style="color:#73FDAA;font-size:14px;font-weight:700;margin:0 0 4px;">🔐 Secure & Decentralized</p>
+                    <p style="color:rgba(255,255,255,0.7);font-size:13px;margin:0;">Your assets, your ownership — powered by Web3.</p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <!-- CTA -->
+          <tr>
+            <td style="padding:0 40px 50px;text-align:center;">
+              <a href="${frontendUrl}/dashboard"
+                 style="display:inline-block;background:#73FDAA;color:#010010;padding:16px 40px;border-radius:20px;font-size:16px;font-weight:700;text-decoration:none;letter-spacing:0.5px;">
+                Go to Dashboard
+              </a>
+            </td>
+          </tr>
+          <!-- Footer -->
+          <tr>
+            <td style="padding:24px 40px;border-top:1px solid rgba(115,253,170,0.2);text-align:center;">
+              <p style="color:rgba(255,255,255,0.4);font-size:12px;margin:0;">
+                &copy; 2022 Circlechain. All rights reserved.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+    `;
+  }
+
   private buildConfirmationEmail(email: string): string {
     return `
 <!DOCTYPE html>
