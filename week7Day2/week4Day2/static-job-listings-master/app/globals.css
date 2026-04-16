@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+html {
+  font-family: var(--font-league-spartan), sans-serif;
+}
+

@@ -1,0 +1,36 @@
+﻿*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: #010010;
+  font-family: "Montserrat", "Roboto", Arial, sans-serif;
+  color: #ffffff;
+  scroll-behavior: smooth;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #010010;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(115, 253, 170, 0.4);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #73FDAA;
+}
