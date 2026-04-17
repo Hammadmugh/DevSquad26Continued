@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { Box, Typography, Card, CardContent, Divider } from '@mui/material';
 import NorthEastIcon from '@mui/icons-material/NorthEast';
 import SouthEastIcon from '@mui/icons-material/SouthEast';
@@ -13,6 +14,7 @@ export interface CoinData {
   isPositive: boolean;
   bgColor: string;
   iconText: string;
+  iconImage?: string;
   hasBorder: boolean;
   tagBg: string;
   tagColor: string;
@@ -37,8 +39,12 @@ export default function CoinTrendCard({ coin }: { coin: CoinData }) {
           {/* Icon + Name + Tag */}
           <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1.5 }}>
             {/* Coin Icon */}
-            <Box sx={{ width: 50, height: 50, bgcolor: coin.bgColor, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: `0 2px 8px ${coin.bgColor}55` }}>
-              <Typography sx={{ color: '#fff', fontWeight: 700, fontSize: 14, fontFamily: 'Raleway' }}>{coin.iconText}</Typography>
+            <Box sx={{ width: 50, height: 50, bgcolor: coin.bgColor, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: `0 2px 8px ${coin.bgColor}55`, overflow: 'hidden' }}>
+              {coin.iconImage ? (
+                <Image src={coin.iconImage} alt={coin.symbol} width={50} height={50} style={{ borderRadius: '50%', objectFit: 'cover' }} />
+              ) : (
+                <Typography sx={{ color: '#fff', fontWeight: 700, fontSize: 14, fontFamily: 'Raleway' }}>{coin.iconText}</Typography>
+              )}
             </Box>
             {/* Symbol */}
             <Typography sx={{ color: '#fff', fontWeight: 600, fontSize: 18, fontFamily: 'Raleway' }}>{coin.symbol}</Typography>

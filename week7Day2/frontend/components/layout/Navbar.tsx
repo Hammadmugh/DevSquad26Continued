@@ -23,6 +23,7 @@ import TelegramIcon from '@mui/icons-material/Telegram';
 import Link from 'next/link';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { logout } from '../../store/slices/authSlice';
+import Image from 'next/image';
 
 const navLinks = [
   { label: 'How it work', href: '#features' },
@@ -44,21 +45,6 @@ export default function Navbar() {
   const isAuthenticated = useAppSelector((s) => s.auth.isAuthenticated);
   const dispatch = useAppDispatch();
 
-  const logoMark = (
-    <Box sx={{ position: 'relative', width: 42, height: 42, mr: 1.5, flexShrink: 0 }}>
-      {[
-        { top: 0, left: 0 }, { top: 0, left: 22 },
-        { top: 22, left: 0 }, { top: 22, left: 22 },
-      ].map((pos, i) => (
-        <Box key={i} sx={{ position: 'absolute', width: 14, height: 14, bgcolor: '#fff', borderRadius: '50%', ...pos }} />
-      ))}
-      <Box sx={{ position: 'absolute', width: 20, height: 0, border: '2px solid #fff', top: 7, left: 11 }} />
-      <Box sx={{ position: 'absolute', width: 0, height: 18, border: '2px solid #fff', top: 11, left: 8 }} />
-      <Box sx={{ position: 'absolute', width: 21, height: 0, border: '2px solid #fff', top: 36, left: 11 }} />
-      <Box sx={{ position: 'absolute', width: 0, height: 11, border: '2px solid #fff', top: 29, left: 36 }} />
-    </Box>
-  );
-
   return (
     <>
       <AppBar
@@ -69,8 +55,8 @@ export default function Navbar() {
         <Toolbar sx={{ maxWidth: 1440, width: '100%', mx: 'auto', px: { xs: 2, md: '70px' }, py: 1.5, minHeight: '80px !important' }}>
           {/* Logo */}
           <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
-            {logoMark}
-            <Typography variant="h6" sx={{ fontWeight: 700, color: '#fff', fontSize: { xs: 20, md: 24 }, fontFamily: 'Montserrat' }}>
+            <Image src={"/logo.png"} alt='logo' width={25} height={25}/>
+            <Typography variant="h6" sx={{ fontWeight: 700, color: '#fff', fontSize: { xs: 20, md: 24 }, fontFamily: 'Montserrat', marginLeft:"15px" }}>
               Circlechain
             </Typography>
           </Link>
