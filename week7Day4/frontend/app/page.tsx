@@ -25,7 +25,7 @@ export default function Home() {
     return (
       <Box sx={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <Typography color="error">
-          Failed to load products. Make sure the backend is running on port 3000.
+          Failed to load products. The backend may be starting up — please wait a moment and refresh.
         </Typography>
       </Box>
     );

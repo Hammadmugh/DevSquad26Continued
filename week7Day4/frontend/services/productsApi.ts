@@ -11,7 +11,7 @@ export interface Product {
 
 export const productsApi = createApi({
   reducerPath: 'productsApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3000/api/' }),
+  baseQuery: fetchBaseQuery({ baseUrl: 'https://week7day4-backend.onrender.com/api/' }),
   tagTypes: ['Products'],
   endpoints: (builder) => ({
     getProducts: builder.query<Product[], void>({

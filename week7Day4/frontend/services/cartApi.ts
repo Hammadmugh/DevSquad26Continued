@@ -15,7 +15,7 @@ export interface Cart {
 
 export const cartApi = createApi({
   reducerPath: 'cartApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3000/api/' }),
+  baseQuery: fetchBaseQuery({ baseUrl: 'https://week7day4-backend.onrender.com/api/' }),
   tagTypes: ['Cart'],
   endpoints: (builder) => ({
     getCart: builder.query<Cart, void>({
