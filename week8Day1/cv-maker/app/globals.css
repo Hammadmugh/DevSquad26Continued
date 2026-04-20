@@ -1,0 +1,101 @@
+@import "tailwindcss";
+
+/* Enable class-based dark mode in Tailwind v4 */
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+}
+
+.dark {
+  --background: #0f172a;
+  --foreground: #f1f5f9;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+/* Rich text content rendered from contenteditable / html2pdf */
+.rich-content ul {
+  list-style: disc;
+  padding-left: 1.2rem;
+  margin: 0.2rem 0;
+}
+
+.rich-content ol {
+  list-style: decimal;
+  padding-left: 1.2rem;
+  margin: 0.2rem 0;
+}
+
+.rich-content li {
+  margin: 0.1rem 0;
+}
+
+.rich-content b,
+.rich-content strong {
+  font-weight: 700;
+}
+
+.rich-content i,
+.rich-content em {
+  font-style: italic;
+}
+
+/* Print styles – isolate the cloned CV content when printing */
+@media print {
+  body > *:not(#print-clone) {
+    display: none !important;
+  }
+
+  #print-clone {
+    display: block;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* box-decoration-break: clone causes this padding to be applied at the
+     top and bottom of every printed page, giving consistent spacing even
+     when content overflows to page 2, 3, etc. */
+  #print-wrapper {
+    padding: 14mm 18mm;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
+  #print-wrapper #cv-preview {
+    width: 100% !important;
+    min-height: unset !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    transform: none !important;
+    /* Force background colours (indigo bar, skill badges, etc.) to print */
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+  }
+
+  /* Apply to every element inside the preview so no child overrides it */
+  #print-wrapper #cv-preview * {
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+  }
+
+  @page {
+    size: A4;
+    /* margin: 0 suppresses browser-generated headers and footers
+       (URL, date, page number) which live in the @page margin area */
+    margin: 0;
+  }
+}
