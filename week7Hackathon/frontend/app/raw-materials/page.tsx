@@ -123,7 +123,7 @@ export default function RawMaterialsPage() {
       {/* Header */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Box>
-          <Typography variant="h5" fontWeight={700} sx={{ color: '#1e1b4b' }}>
+          <Typography variant="h5" sx={{ fontWeight: 700, color: '#1e1b4b' }}>
             Raw Materials
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }}>
@@ -224,7 +224,7 @@ export default function RawMaterialsPage() {
                       >
                         {initials}
                       </Avatar>
-                      <Typography fontWeight={600}>{m.name}</Typography>
+                      <Typography sx={{ fontWeight: 600 }}>{m.name}</Typography>
                     </Box>
                   </TableCell>
                   <TableCell>
@@ -241,7 +241,7 @@ export default function RawMaterialsPage() {
                     />
                   </TableCell>
                   <TableCell sx={{ minWidth: 140 }}>
-                    <Typography fontWeight={600} color={isLow ? 'error' : 'inherit'} sx={{ mb: 0.5 }}>
+                    <Typography color={isLow ? 'error' : 'inherit'} sx={{ fontWeight: 600, mb: 0.5 }}>
                       {m.quantity}
                     </Typography>
                     <LinearProgress
@@ -304,9 +304,7 @@ export default function RawMaterialsPage() {
       </TableContainer>
 
       {/* Add/Edit Dialog */}
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth
-        PaperProps={{ sx: { borderRadius: 3 } }}
-      >
+      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle sx={{ fontWeight: 700, pb: 1 }}>
           {editTarget ? 'Edit Raw Material' : 'Add Raw Material'}
         </DialogTitle>

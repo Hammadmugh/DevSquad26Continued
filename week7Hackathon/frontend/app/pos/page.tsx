@@ -82,14 +82,14 @@ export default function POSPage() {
   return (
     <Box>
       <Box sx={{ mb: 3 }}>
-        <Typography variant="h5" fontWeight={800}>Point of Sale</Typography>
+        <Typography variant="h5" sx={{ fontWeight: 800 }}>Point of Sale</Typography>
         <Typography variant="body2" color="text.secondary" mt={0.5}>Select products and complete the sale</Typography>
       </Box>
 
       <Grid container spacing={3}>
         {/* Products Grid */}
         <Grid size={{ xs: 12, md: 7 }}>
-          <Typography variant="subtitle1" fontWeight={700} color="text.secondary" mb={1.5} sx={{ textTransform: 'uppercase', letterSpacing: 0.5, fontSize: 12 }}>
+          <Typography variant="subtitle1" color="text.secondary" mb={1.5} sx={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5, fontSize: 12 }}>
             Available Products
           </Typography>
           <Grid container spacing={2}>
@@ -109,7 +109,7 @@ export default function POSPage() {
                     <CardActionArea onClick={() => available && handleAddToCart(p._id)} disabled={!available} sx={{ borderRadius: 'inherit' }}>
                       <CardContent sx={{ p: 2 }}>
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
-                          <Typography variant="subtitle2" fontWeight={700} sx={{ lineHeight: 1.3 }}>
+                          <Typography variant="subtitle2" sx={{ fontWeight: 700, lineHeight: 1.3 }}>
                             {p.name}
                           </Typography>
                           {inCart > 0 && (
@@ -118,7 +118,7 @@ export default function POSPage() {
                             </Avatar>
                           )}
                         </Box>
-                        <Typography variant="h6" fontWeight={800} sx={{ color: '#6366f1', mb: 1 }}>
+                        <Typography variant="h6" sx={{ fontWeight: 800, color: '#6366f1', mb: 1 }}>
                           PKR {p.price.toLocaleString()}
                         </Typography>
                         <Chip
@@ -145,7 +145,7 @@ export default function POSPage() {
             {/* Cart Header */}
             <Box sx={{ background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)', p: 2.5, display: 'flex', alignItems: 'center', gap: 1.5 }}>
               <ShoppingCartIcon sx={{ color: '#fff' }} />
-              <Typography variant="h6" fontWeight={700} sx={{ color: '#fff', flexGrow: 1 }}>
+              <Typography variant="h6" sx={{ fontWeight: 700, color: '#fff', flexGrow: 1 }}>
                 Current Order
               </Typography>
               {cartItems.length > 0 && (
@@ -166,7 +166,7 @@ export default function POSPage() {
                     {cartItems.map((item) => (
                       <Box key={item.product._id} sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2, p: 1.5, bgcolor: '#f8fafc', borderRadius: 2, border: '1px solid #e2e8f0' }}>
                         <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-                          <Typography variant="body2" fontWeight={700} noWrap>{item.product.name}</Typography>
+                          <Typography variant="body2" noWrap sx={{ fontWeight: 700 }}>{item.product.name}</Typography>
                           <Typography variant="caption" color="text.secondary">PKR {item.product.price} each</Typography>
                         </Box>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
@@ -182,7 +182,7 @@ export default function POSPage() {
                           </IconButton>
                         </Box>
                         <Box sx={{ textAlign: 'right', minWidth: 64 }}>
-                          <Typography variant="body2" fontWeight={700} color="#6366f1">
+                          <Typography variant="body2" sx={{ fontWeight: 700, color: '#6366f1' }}>
                             PKR {(item.product.price * item.quantity).toLocaleString()}
                           </Typography>
                         </Box>
@@ -196,8 +196,8 @@ export default function POSPage() {
                   <Divider sx={{ my: 2 }} />
 
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, p: 1.5, bgcolor: 'rgba(99,102,241,0.06)', borderRadius: 2 }}>
-                    <Typography variant="subtitle1" fontWeight={700}>Total</Typography>
-                    <Typography variant="h5" fontWeight={800} sx={{ color: '#6366f1' }}>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>Total</Typography>
+                    <Typography variant="h5" sx={{ fontWeight: 800, color: '#6366f1' }}>
                       PKR {total.toLocaleString()}
                     </Typography>
                   </Box>

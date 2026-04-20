@@ -127,7 +127,7 @@ export default function ProductsPage() {
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3 }}>
         <Box>
-          <Typography variant="h5" fontWeight={800}>Products</Typography>
+          <Typography variant="h5" sx={{ fontWeight: 800 }}>Products</Typography>
           <Typography variant="body2" color="text.secondary" mt={0.5}>
             {products.length} products with recipe-based availability
           </Typography>
@@ -140,7 +140,7 @@ export default function ProductsPage() {
       {products.length === 0 && (
         <Box sx={{ textAlign: 'center', py: 8, bgcolor: '#fff', borderRadius: 3, border: '1px dashed #e2e8f0' }}>
           <StorefrontIcon sx={{ fontSize: 56, color: '#cbd5e1', mb: 2 }} />
-          <Typography fontWeight={600} color="text.secondary">No products yet</Typography>
+          <Typography sx={{ fontWeight: 600 }} color="text.secondary">No products yet</Typography>
           <Typography variant="body2" color="text.secondary">Add a product with a recipe to get started</Typography>
         </Box>
       )}
@@ -164,8 +164,8 @@ export default function ProductsPage() {
                       sx={{ fontWeight: 700, bgcolor: available ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)', color: available ? '#059669' : '#dc2626' }}
                     />
                   </Box>
-                  <Typography variant="h6" fontWeight={800} mb={0.5}>{p.name}</Typography>
-                  <Typography variant="h5" fontWeight={800} sx={{ background: color.bg, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', mb: 1.5 }}>
+                  <Typography variant="h6" sx={{ fontWeight: 800 }} mb={0.5}>{p.name}</Typography>
+                  <Typography variant="h5" sx={{ fontWeight: 800, background: color.bg, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', mb: 1.5 }}>
                     PKR {p.price.toLocaleString()}
                   </Typography>
                   <Box sx={{ mb: 2 }}>
@@ -176,7 +176,7 @@ export default function ProductsPage() {
                     />
                   </Box>
                   <Divider sx={{ mb: 1.5 }} />
-                  <Typography variant="caption" fontWeight={700} color="text.secondary" sx={{ textTransform: 'uppercase', letterSpacing: 0.5 }}>Recipe</Typography>
+                  <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>Recipe</Typography>
                   <Box sx={{ mt: 0.5, display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                     {p.recipe.map((r, i) => {
                       const mat = typeof r.materialId === 'string' ? null : r.materialId;
@@ -211,9 +211,9 @@ export default function ProductsPage() {
         <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, pt: 2 }}>
           {error && <Alert severity="error" sx={{ borderRadius: 2 }}>{error}</Alert>}
           <TextField label="Product Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} fullWidth required sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }} />
-          <TextField label="Price (PKR)" type="number" value={form.price} onChange={(e) => setForm({ ...form, price: Number(e.target.value) })} fullWidth inputProps={{ min: 0 }} sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }} />
+          <TextField label="Price (PKR)" type="number" value={form.price} onChange={(e) => setForm({ ...form, price: Number(e.target.value) })} fullWidth slotProps={{ htmlInput: { min: 0 } }} sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }} />
           <Divider />
-          <Typography variant="subtitle2" fontWeight={700} color="text.secondary" sx={{ textTransform: 'uppercase', letterSpacing: 0.5 }}>
+          <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>
             Recipe / Ingredients
           </Typography>
           {form.recipe.map((r, idx) => (
@@ -221,7 +221,7 @@ export default function ProductsPage() {
               <TextField label="Material" select value={r.materialId} onChange={(e) => updateIngredient(idx, 'materialId', e.target.value)} sx={{ flex: 2, '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: '#fff' } }} size="small">
                 {materials.map((m) => <MenuItem key={m._id} value={m._id}>{m.name} ({m.unit})</MenuItem>)}
               </TextField>
-              <TextField label="Qty" type="number" value={r.quantity} onChange={(e) => updateIngredient(idx, 'quantity', Number(e.target.value))} sx={{ flex: 1, '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: '#fff' } }} size="small" inputProps={{ min: 0.001, step: 0.1 }} />
+              <TextField label="Qty" type="number" value={r.quantity} onChange={(e) => updateIngredient(idx, 'quantity', Number(e.target.value))} sx={{ flex: 1, '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: '#fff' } }} size="small" slotProps={{ htmlInput: { min: 0.001, step: 0.1 } }} />
               <IconButton color="error" size="small" onClick={() => removeIngredient(idx)} sx={{ bgcolor: 'rgba(239,68,68,0.07)' }}>
                 <RemoveCircleOutlineIcon fontSize="small" />
               </IconButton>

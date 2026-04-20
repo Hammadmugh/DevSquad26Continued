@@ -117,7 +117,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
     return (
       <Box sx={{ bgcolor: '#fff', border: '1px solid #e2e8f0', borderRadius: 2, p: 1.5, boxShadow: '0 4px 16px rgba(0,0,0,0.1)' }}>
         <Typography variant="caption" color="text.secondary">{label}</Typography>
-        <Typography variant="body2" fontWeight={700} color="#6366f1">PKR {payload[0].value.toLocaleString()}</Typography>
+        <Typography variant="body2" sx={{ fontWeight: 700 }} color="#6366f1">PKR {payload[0].value.toLocaleString()}</Typography>
       </Box>
     );
   }
@@ -221,7 +221,7 @@ export default function DashboardPage() {
                   data.topProducts.map((p, i) => (
                     <Box key={p.name} sx={{ mb: 2 }}>
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                        <Typography variant="body2" fontWeight={600}>
+                        <Typography variant="body2" sx={{ fontWeight: 600 }}>
                           {i + 1}. {p.name}
                         </Typography>
                         <Chip label={`${p.totalSold} sold`} size="small" sx={{ bgcolor: 'rgba(99,102,241,0.1)', color: '#6366f1', fontWeight: 700 }} />
@@ -246,7 +246,7 @@ export default function DashboardPage() {
               <CardContent sx={{ p: 3 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
                   <WarningAmberIcon sx={{ color: '#f59e0b' }} />
-                  <Typography variant="h6" fontWeight={700} sx={{ color: '#92400e' }}>
+                  <Typography variant="h6" sx={{ fontWeight: 700, color: '#92400e' }}>
                     Low Stock Alerts
                   </Typography>
                   <Chip label={data.lowStockMaterials.length} size="small" sx={{ bgcolor: '#fef3c7', color: '#92400e', fontWeight: 700 }} />
@@ -256,7 +256,7 @@ export default function DashboardPage() {
                     <Grid key={m._id} size={{ xs: 12, sm: 6, md: 4 }}>
                       <Box sx={{ p: 2, bgcolor: '#fff', border: '1px solid rgba(245,158,11,0.2)', borderRadius: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <Box>
-                          <Typography variant="body2" fontWeight={700}>{m.name}</Typography>
+                          <Typography variant="body2" sx={{ fontWeight: 700 }}>{m.name}</Typography>
                           <Typography variant="caption" color="text.secondary">Min: {m.minStockLevel} {m.unit}</Typography>
                         </Box>
                         <Chip label={`${m.quantity} ${m.unit}`} size="small" color="warning" sx={{ fontWeight: 700 }} />

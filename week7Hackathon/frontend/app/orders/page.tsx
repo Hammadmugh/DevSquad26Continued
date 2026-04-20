@@ -32,7 +32,7 @@ export default function OrdersPage() {
   return (
     <Box>
       <Box sx={{ mb: 3 }}>
-        <Typography variant="h5" fontWeight={800}>Order History</Typography>
+        <Typography variant="h5" sx={{ fontWeight: 800 }}>Order History</Typography>
         <Typography variant="body2" color="text.secondary" mt={0.5}>
           {orders.length} total orders placed
         </Typography>
@@ -41,7 +41,7 @@ export default function OrdersPage() {
       {orders.length === 0 && (
         <Box sx={{ textAlign: 'center', py: 8, bgcolor: '#fff', borderRadius: 3, border: '1px dashed #e2e8f0' }}>
           <ReceiptLongIcon sx={{ fontSize: 56, color: '#cbd5e1', mb: 2 }} />
-          <Typography fontWeight={600} color="text.secondary">No orders yet</Typography>
+          <Typography sx={{ fontWeight: 600 }} color="text.secondary">No orders yet</Typography>
           <Typography variant="body2" color="text.secondary">Complete a sale from the POS page</Typography>
         </Box>
       )}
@@ -69,7 +69,7 @@ export default function OrdersPage() {
                   {idx + 1}
                 </Avatar>
                 <Box>
-                  <Typography variant="body2" fontWeight={700}>
+                  <Typography variant="body2" sx={{ fontWeight: 700 }}>
                     Order #{order._id.slice(-8).toUpperCase()}
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
@@ -87,7 +87,7 @@ export default function OrdersPage() {
                     color: order.status === 'completed' ? '#059669' : '#d97706',
                   }}
                 />
-                <Typography fontWeight={800} sx={{ color: '#6366f1', fontSize: 15 }}>
+                <Typography sx={{ fontWeight: 800, color: '#6366f1', fontSize: 15 }}>
                   PKR {order.totalAmount.toLocaleString()}
                 </Typography>
               </Box>
@@ -109,7 +109,7 @@ export default function OrdersPage() {
                   {order.items.map((item, i) => (
                     <TableRow key={i} sx={{ '&:last-child td': { borderBottom: 0 } }}>
                       <TableCell>
-                        <Typography variant="body2" fontWeight={600}>{item.productName}</Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 600 }}>{item.productName}</Typography>
                       </TableCell>
                       <TableCell align="center">
                         <Chip label={item.quantity} size="small" sx={{ bgcolor: 'rgba(99,102,241,0.08)', color: '#6366f1', fontWeight: 700, minWidth: 32 }} />
@@ -118,16 +118,16 @@ export default function OrdersPage() {
                         <Typography variant="body2" color="text.secondary">PKR {item.unitPrice.toLocaleString()}</Typography>
                       </TableCell>
                       <TableCell align="right">
-                        <Typography variant="body2" fontWeight={700}>PKR {item.subtotal.toLocaleString()}</Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 700 }}>PKR {item.subtotal.toLocaleString()}</Typography>
                       </TableCell>
                     </TableRow>
                   ))}
                   <TableRow sx={{ bgcolor: 'rgba(99,102,241,0.04)' }}>
                     <TableCell colSpan={3} align="right" sx={{ border: 0 }}>
-                      <Typography fontWeight={700}>Total</Typography>
+                      <Typography sx={{ fontWeight: 700 }}>Total</Typography>
                     </TableCell>
                     <TableCell align="right" sx={{ border: 0 }}>
-                      <Typography fontWeight={800} sx={{ color: '#6366f1', fontSize: 16 }}>
+                      <Typography sx={{ fontWeight: 800, color: '#6366f1', fontSize: 16 }}>
                         PKR {order.totalAmount.toLocaleString()}
                       </Typography>
                     </TableCell>
