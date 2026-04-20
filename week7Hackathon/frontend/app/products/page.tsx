@@ -128,7 +128,7 @@ export default function ProductsPage() {
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3 }}>
         <Box>
           <Typography variant="h5" sx={{ fontWeight: 800 }}>Products</Typography>
-          <Typography variant="body2" color="text.secondary" mt={0.5}>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
             {products.length} products with recipe-based availability
           </Typography>
         </Box>
@@ -164,7 +164,7 @@ export default function ProductsPage() {
                       sx={{ fontWeight: 700, bgcolor: available ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)', color: available ? '#059669' : '#dc2626' }}
                     />
                   </Box>
-                  <Typography variant="h6" sx={{ fontWeight: 800 }} mb={0.5}>{p.name}</Typography>
+                  <Typography variant="h6" sx={{ fontWeight: 800, mb: 0.5 }}>{p.name}</Typography>
                   <Typography variant="h5" sx={{ fontWeight: 800, background: color.bg, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', mb: 1.5 }}>
                     PKR {p.price.toLocaleString()}
                   </Typography>
@@ -206,7 +206,7 @@ export default function ProductsPage() {
       </Grid>
 
       {/* Dialog */}
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth PaperProps={{ sx: { borderRadius: 3 } }}>
+      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle sx={{ fontWeight: 700 }}>{editTarget ? 'Edit Product' : 'Add Product'}</DialogTitle>
         <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, pt: 2 }}>
           {error && <Alert severity="error" sx={{ borderRadius: 2 }}>{error}</Alert>}

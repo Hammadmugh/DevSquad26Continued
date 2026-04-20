@@ -33,7 +33,7 @@ export default function OrdersPage() {
     <Box>
       <Box sx={{ mb: 3 }}>
         <Typography variant="h5" sx={{ fontWeight: 800 }}>Order History</Typography>
-        <Typography variant="body2" color="text.secondary" mt={0.5}>
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
           {orders.length} total orders placed
         </Typography>
       </Box>

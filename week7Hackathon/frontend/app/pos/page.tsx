@@ -83,13 +83,13 @@ export default function POSPage() {
     <Box>
       <Box sx={{ mb: 3 }}>
         <Typography variant="h5" sx={{ fontWeight: 800 }}>Point of Sale</Typography>
-        <Typography variant="body2" color="text.secondary" mt={0.5}>Select products and complete the sale</Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>Select products and complete the sale</Typography>
       </Box>
 
       <Grid container spacing={3}>
         {/* Products Grid */}
         <Grid size={{ xs: 12, md: 7 }}>
-          <Typography variant="subtitle1" color="text.secondary" mb={1.5} sx={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5, fontSize: 12 }}>
+          <Typography variant="subtitle1" color="text.secondary" sx={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5, fontSize: 12, mb: 1.5 }}>
             Available Products
           </Typography>
           <Grid container spacing={2}>

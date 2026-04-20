@@ -145,13 +145,13 @@ export default function DashboardPage() {
         <Typography variant="h5" sx={{ fontWeight: 800, color: '#1e293b' }}>
           Dashboard
         </Typography>
-        <Typography variant="body2" color="text.secondary" mt={0.5}>
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
           Welcome back — here&apos;s your business snapshot.
         </Typography>
       </Box>
 
       {/* KPI Cards */}
-      <Grid container spacing={3} mb={4}>
+      <Grid container spacing={3} sx={{ mb: 4 }}>
         {CARDS.map((c, i) => {
           const values = [
             `PKR ${data.totalRevenue.toLocaleString()}`,

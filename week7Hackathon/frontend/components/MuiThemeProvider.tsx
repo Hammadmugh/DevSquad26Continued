@@ -28,9 +28,9 @@ const theme = createTheme({
           fontWeight: 600,
           boxShadow: 'none',
           '&:hover': { boxShadow: 'none' },
-        },
-        containedPrimary: {
-          background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+          '&.MuiButton-containedPrimary': {
+            background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+          },
         },
       },
     },
